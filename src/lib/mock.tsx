@@ -11,6 +11,7 @@ export interface Profile {
   role: Role;
   country: string;
   notes?: string;
+  avatar?: string;
 }
 
 export interface Vendor {
@@ -150,7 +151,7 @@ const seedLogs: ActivityLog[] = [
 ];
 
 const seedProfiles: Profile[] = [
-  { id: "p1", firstName: "Akshat", email: "akshat@vendorbridge.app", phone: "+91 90000 00001", role: "Procurement Officer", country: "India" },
+  { id: "p1", firstName: "Akshat", email: "akshat@vendorbridge.app", phone: "+91 90000 00001", role: "Procurement Officer", country: "India", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&h=256&fit=crop" },
 ];
 
 export function MockProvider({ children }: { children: ReactNode }) {

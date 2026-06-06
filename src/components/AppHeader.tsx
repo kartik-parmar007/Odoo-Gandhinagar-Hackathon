@@ -88,13 +88,22 @@ export function AppHeader({ title }: { title: string }) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="size-9 grid place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90 outline-none transition-opacity cursor-pointer">
-              <UserCircle2 className="size-5" />
+            <button className="size-9 grid place-items-center rounded-full bg-primary text-primary-foreground hover:opacity-90 outline-none transition-opacity cursor-pointer overflow-hidden">
+              {currentProfile?.avatar ? (
+                <img src={currentProfile.avatar} className="size-full object-cover" alt="Profile" />
+              ) : (
+                <UserCircle2 className="size-5" />
+              )}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-64 p-3 space-y-2">
             <DropdownMenuLabel className="font-semibold text-sm">User Profile</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {currentProfile?.avatar && (
+              <div className="flex justify-center py-2">
+                <img src={currentProfile.avatar} className="size-16 rounded-full object-cover border animate-fade-in" alt="Avatar" />
+              </div>
+            )}
             <div className="text-xs space-y-1.5 bg-muted/40 p-2.5 rounded-md">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Name:</span>

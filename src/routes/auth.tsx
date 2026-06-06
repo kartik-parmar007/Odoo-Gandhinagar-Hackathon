@@ -20,7 +20,7 @@ function Auth() {
   const { currentProfile, addProfile, setRole, setCurrentProfile, profiles, isDbConnected } = useStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [signup, setSignup] = useState({ firstName: "", email: "", phone: "", role: "Procurement Officer" as Role, country: "India", notes: "" });
+  const [signup, setSignup] = useState({ firstName: "", email: "", phone: "", role: "Procurement Officer" as Role, country: "India", notes: "", avatar: "" });
 
   useEffect(() => {
     if (currentProfile) {
@@ -37,6 +37,7 @@ function Auth() {
         phone: "+91 99999 88888",
         role: "Admin" as Role,
         country: "India",
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&h=256&fit=crop",
       };
 
       setCurrentProfile(adminProfile);
@@ -105,8 +106,30 @@ function Auth() {
               <p className="text-xs text-muted-foreground text-center">Admin credentials: kartikparmar.dev@gmail.com / Kartik12345</p>
             </TabsContent>
             <TabsContent value="signup" className="space-y-3 mt-5">
-              <div className="flex justify-center">
-                <div className="size-20 rounded-full bg-muted border-2 border-dashed grid place-items-center text-muted-foreground"><Camera className="size-6" /></div>
+              <div className="flex flex-col items-center gap-1.5">
+                <Label className="text-xs text-muted-foreground">Profile Picture</Label>
+                <div className="relative group cursor-pointer size-20 rounded-full border-2 border-dashed bg-muted hover:border-primary flex items-center justify-center overflow-hidden transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setSignup({ ...signup, avatar: reader.result as string });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+                  />
+                  {signup.avatar ? (
+                    <img src={signup.avatar} className="size-full object-cover" alt="Profile" />
+                  ) : (
+                    <Camera className="size-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                  )}
+                </div>
               </div>
               <div><Label>First Name</Label><Input value={signup.firstName} onChange={(e) => setSignup({ ...signup, firstName: e.target.value })} /></div>
               <div><Label>Email Address</Label><Input type="email" value={signup.email} onChange={(e) => setSignup({ ...signup, email: e.target.value })} /></div>
