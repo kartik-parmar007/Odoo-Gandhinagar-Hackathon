@@ -417,7 +417,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
       const mappedVendor: Vendor = { ...v, id: newId };
       setVendors((p) => [mappedVendor, ...p]);
 
-      if (supabase && isDbConnected) {
+      if (supabase) {
         try {
           const { error } = await supabase.from("vendors").insert({
             id: newId,
@@ -428,7 +428,11 @@ export function MockProvider({ children }: { children: ReactNode }) {
             rating: v.rating,
             status: v.status
           });
-          if (error) throw error;
+          if (error) {
+            console.error("Supabase vendor insert error:", error);
+            throw error;
+          }
+          console.log("Vendor inserted to Supabase successfully:", newId);
         } catch (e) {
           console.warn("Supabase insert failed, local state updated:", e);
         }
@@ -439,7 +443,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
       const mappedRFQ: RFQ = { ...r, id: newId, createdAt: now(), status: "Open" };
       setRFQs((p) => [mappedRFQ, ...p]);
 
-      if (supabase && isDbConnected) {
+      if (supabase) {
         try {
           const { error } = await supabase.from("rfqs").insert({
             id: newId,
@@ -455,7 +459,11 @@ export function MockProvider({ children }: { children: ReactNode }) {
             deadline: new Date(r.deadline).toISOString(),
             status: "Active"
           });
-          if (error) throw error;
+          if (error) {
+            console.error("Supabase RFQ insert error:", error);
+            throw error;
+          }
+          console.log("RFQ inserted to Supabase successfully:", newId);
         } catch (e) {
           console.warn("Supabase insert failed, local state updated:", e);
         }
@@ -468,7 +476,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
 
       const totalPrice = q.lines.reduce((acc, curr) => acc + curr.qty * curr.unitPrice, 0);
 
-      if (supabase && isDbConnected) {
+      if (supabase) {
         try {
           const { error } = await supabase.from("quotations").insert({
             id: newId,
@@ -479,7 +487,11 @@ export function MockProvider({ children }: { children: ReactNode }) {
             notes: JSON.stringify({ lines: q.lines, userNotes: q.notes || "" }),
             status: "Submitted"
           });
-          if (error) throw error;
+          if (error) {
+            console.error("Supabase quotation insert error:", error);
+            throw error;
+          }
+          console.log("Quotation inserted to Supabase successfully:", newId);
         } catch (e) {
           console.warn("Supabase insert failed, local state updated:", e);
         }
@@ -488,14 +500,18 @@ export function MockProvider({ children }: { children: ReactNode }) {
     updateApproval: async (id, patch) => {
       setApprovals((p) => p.map((a) => a.id === id ? { ...a, ...patch, updatedAt: now() } : a));
 
-      if (supabase && isDbConnected) {
+      if (supabase) {
         try {
           const dbStatus = patch.state === "Approved" ? "Approved" : patch.state === "Rejected" ? "Rejected" : "Pending";
           const { error } = await supabase.from("approvals").update({
             status: dbStatus,
             remarks: patch.remarks
           }).eq("id", id);
-          if (error) throw error;
+          if (error) {
+            console.error("Supabase approval update error:", error);
+            throw error;
+          }
+          console.log("Approval updated in Supabase successfully:", id);
         } catch (e) {
           console.warn("Supabase update failed, local state updated:", e);
         }
@@ -506,7 +522,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
       const mappedProfile: Profile = { ...p, id: newId };
       setProfiles((arr) => [mappedProfile, ...arr]);
 
-      if (supabase && isDbConnected) {
+      if (supabase) {
         try {
           const { error } = await supabase.from("profiles").insert({
             id: newId,
@@ -516,7 +532,11 @@ export function MockProvider({ children }: { children: ReactNode }) {
             phone_number: p.phone,
             country: p.country
           });
-          if (error) throw error;
+          if (error) {
+            console.error("Supabase profile insert error:", error);
+            throw error;
+          }
+          console.log("Profile inserted to Supabase successfully:", newId);
         } catch (e) {
           console.warn("Supabase insert failed, local state updated:", e);
         }
@@ -527,14 +547,17 @@ export function MockProvider({ children }: { children: ReactNode }) {
       const mappedLog: ActivityLog = { ...l, id: newId, timestamp: now() };
       setLogs((p) => [mappedLog, ...p]);
 
-      if (supabase && isDbConnected) {
+      if (supabase) {
         try {
           const { error } = await supabase.from("activity_logs").insert({
             id: newId,
             action: l.type,
             details: l.message
           });
-          if (error) throw error;
+          if (error) {
+            console.error("Supabase log insert error:", error);
+            throw error;
+          }
         } catch (e) {
           console.warn("Supabase insert failed, local state updated:", e);
         }
