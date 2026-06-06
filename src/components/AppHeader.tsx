@@ -15,7 +15,7 @@ import {
 const ROLES: Role[] = ["Procurement Officer", "Vendor", "Manager", "Admin"];
 
 export function AppHeader({ title }: { title: string }) {
-  const { role, setRole, currentProfile } = useStore();
+  const { role, setRole, currentProfile, setCurrentProfile } = useStore();
   const navigate = useNavigate();
 
   return (
@@ -76,6 +76,7 @@ export function AppHeader({ title }: { title: string }) {
             <DropdownMenuItem asChild>
               <button 
                 onClick={() => {
+                  setCurrentProfile(null);
                   toast.success("Signed out successfully");
                   navigate({ to: "/auth" });
                 }} 

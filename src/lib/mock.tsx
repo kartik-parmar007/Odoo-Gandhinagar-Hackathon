@@ -90,8 +90,8 @@ interface State {
   log: (l: Omit<ActivityLog, "id" | "timestamp">) => void;
   refreshData: () => Promise<void>;
   isDbConnected: boolean;
-  currentProfile: Profile;
-  setCurrentProfile: (p: Profile) => void;
+  currentProfile: Profile | null;
+  setCurrentProfile: (p: Profile | null) => void;
 }
 
 const Ctx = createContext<State | null>(null);
@@ -154,9 +154,29 @@ const seedProfiles: Profile[] = [
 ];
 
 export function MockProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role>("Procurement Officer");
+  const [currentProfile, setCurrentProfile] = useState<Profile | null>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("vendorbridge_profile");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          return null;
+        }
+      }
+    }
+    return null;
+  });
+
+  const [role, setRole] = useState<Role>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("vendorbridge_role");
+      if (saved) return saved as Role;
+    }
+    return "Procurement Officer";
+  });
+
   const [profiles, setProfiles] = useState(seedProfiles);
-  const [currentProfile, setCurrentProfile] = useState<Profile>(seedProfiles[0]);
   const [vendors, setVendors] = useState(seedVendors);
   const [rfqs, setRFQs] = useState(seedRFQs);
   const [quotations, setQuotations] = useState(seedQuotations);
@@ -168,6 +188,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
   const changeRole = (r: Role) => {
     setRole(r);
     setCurrentProfile((prev) => {
+      if (!prev) return null;
       const matched = profiles.find((p) => p.role === r);
       if (matched) return matched;
       return {
@@ -175,6 +196,8 @@ export function MockProvider({ children }: { children: ReactNode }) {
         firstName: r === "Admin" ? "Kartik Parmar" : prev.firstName,
         email: r === "Admin" ? "kartikparmar.dev@gmail.com" : prev.email,
         role: r,
+        phone: prev.phone || "",
+        country: prev.country || "",
       };
     });
   };
@@ -318,6 +341,18 @@ export function MockProvider({ children }: { children: ReactNode }) {
       refreshData();
     }
   }, []);
+
+  useEffect(() => {
+    if (currentProfile) {
+      localStorage.setItem("vendorbridge_profile", JSON.stringify(currentProfile));
+    } else {
+      localStorage.removeItem("vendorbridge_profile");
+    }
+  }, [currentProfile]);
+
+  useEffect(() => {
+    localStorage.setItem("vendorbridge_role", role);
+  }, [role]);
 
   const value = useMemo<State>(() => ({
     role,

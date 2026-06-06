@@ -34,3 +34,7 @@ dist-ssr
 # Environment files
 .env
 .env*.local
+
+# Vercel output
+.vercel
+

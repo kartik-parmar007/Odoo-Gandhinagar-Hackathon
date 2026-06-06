@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useStore, type Role } from "@/lib/mock";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,10 +17,16 @@ import { supabase } from "@/lib/supabase";
 
 function Auth() {
   const navigate = useNavigate();
-  const { addProfile, setRole, setCurrentProfile, profiles, isDbConnected } = useStore();
+  const { currentProfile, addProfile, setRole, setCurrentProfile, profiles, isDbConnected } = useStore();
   const [email, setEmail] = useState("akshat@vendorbridge.app");
   const [password, setPassword] = useState("demo1234");
   const [signup, setSignup] = useState({ firstName: "", email: "", phone: "", role: "Procurement Officer" as Role, country: "India", notes: "" });
+
+  useEffect(() => {
+    if (currentProfile) {
+      navigate({ to: "/" });
+    }
+  }, [currentProfile, navigate]);
 
   const handleLogin = async () => {
     if (email === "kartikparmar.dev@gmail.com" && password === "Kartik12345") {
