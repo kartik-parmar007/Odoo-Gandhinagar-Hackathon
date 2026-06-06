@@ -77,19 +77,16 @@ Meet the creators behind **VendorBridge**, built during the Odoo Gandhinagar Hac
 <table align="center">
   <tr>
     <td align="center" width="33%">
-      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&h=150&fit=crop" width="100px" style="border-radius:50%;" alt="Kartik Parmar"/><br>
       <strong>Kartik Parmar</strong><br>
       <font color="#888">Backend Developer</font><br>
       <sub>Database Architect, Supabase Integration & API Functions</sub>
     </td>
     <td align="center" width="33%">
-      <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150&h=150&fit=crop" width="100px" style="border-radius:50%;" alt="Vishva Jagad"/><br>
       <strong>Vishva Jagad</strong><br>
       <font color="#888">Frontend Developer</font><br>
       <sub>Application Routing, State Synchronization & Interactive Dashboards</sub>
     </td>
     <td align="center" width="33%">
-      <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&h=150&fit=crop" width="100px" style="border-radius:50%;" alt="Maitry Baraiya"/><br>
       <strong>Maitry Baraiya</strong><br>
       <font color="#888">UI/UX Designer</font><br>
       <sub>Visual Hierarchy, Responsive Layouts & Sleek Modern Styling</sub>
