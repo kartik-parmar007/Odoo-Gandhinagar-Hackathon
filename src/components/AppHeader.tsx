@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useStore, type Role } from "@/lib/mock";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, UserCircle2, Menu, LayoutDashboard, Users, FileText, FileCheck2, ShieldCheck, ShoppingCart, Receipt, BarChart3, Activity } from "lucide-react";
+import { Bell, UserCircle2, Menu, LayoutDashboard, Users, FileText, FileCheck2, ShieldCheck, ShoppingCart, Receipt, BarChart3, Activity, GitCompareArrows } from "lucide-react";
 import { useNavigate, useRouterState, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -24,11 +24,12 @@ const NAV_ITEMS = [
   { to: "/vendors", label: "Vendors", icon: Users, roles: ["Procurement Officer", "Admin", "Manager"] },
   { to: "/rfqs", label: "RFQs", icon: FileText, roles: ALL },
   { to: "/quotations", label: "Quotations", icon: FileCheck2, roles: ALL },
+  { to: "/quotation-comparison", label: "Compare Quotes", icon: GitCompareArrows, roles: ["Procurement Officer", "Manager", "Admin"] },
   { to: "/approvals", label: "Approvals", icon: ShieldCheck, roles: ["Manager", "Admin"] },
   { to: "/purchase-orders", label: "Purchase Orders", icon: ShoppingCart, roles: ["Procurement Officer", "Vendor", "Admin"] },
   { to: "/invoices", label: "Invoices", icon: Receipt, roles: ["Procurement Officer", "Vendor", "Admin"] },
   { to: "/reports", label: "Reports", icon: BarChart3, roles: ["Procurement Officer", "Manager", "Admin"] },
-  { to: "/activity", label: "Activity", icon: Activity, roles: ALL },
+  { to: "/activity", label: "Activity & Logs", icon: Activity, roles: ALL },
 ];
 
 export function AppHeader({ title }: { title: string }) {
@@ -73,12 +74,12 @@ export function AppHeader({ title }: { title: string }) {
               <Menu className="size-5" />
             </button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-60 p-0 flex flex-col bg-sidebar border-r border-sidebar-border text-sidebar-foreground">
-            <div className="px-5 py-5 flex items-center gap-2 border-b border-sidebar-border">
-              <div className="size-8 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-bold">V</div>
+          <SheetContent side="left" className="w-64 p-0 flex flex-col bg-sidebar border-r border-sidebar-border text-sidebar-foreground">
+            <div className="px-4 py-4 flex items-center gap-3 border-b border-sidebar-border">
+              <img src="/logo.png" alt="VendorBridge" className="size-9 rounded-lg object-contain bg-white/10 p-0.5" />
               <div>
-                <div className="font-semibold leading-none">VendorBridge</div>
-                <div className="text-[10px] uppercase tracking-wider opacity-60 mt-1">Procurement ERP</div>
+                <div className="font-bold text-base leading-none tracking-tight">VendorBridge</div>
+                <div className="text-[10px] uppercase tracking-widest opacity-50 mt-1 font-medium">Procurement ERP</div>
               </div>
             </div>
             <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
@@ -86,8 +87,8 @@ export function AppHeader({ title }: { title: string }) {
                 const active = i.to === "/" ? pathname === "/" : pathname.startsWith(i.to);
                 return (
                   <Link key={i.to} to={i.to} className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                    active ? "bg-sidebar-primary text-sidebar-primary-foreground" : "hover:bg-sidebar-accent"
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                    active ? "bg-sidebar-primary text-sidebar-primary-foreground" : "text-sidebar-foreground/70 hover:bg-sidebar-accent"
                   )}>
                     <i.icon className="size-4" />
                     <span>{i.label}</span>
@@ -95,7 +96,7 @@ export function AppHeader({ title }: { title: string }) {
                 );
               })}
             </nav>
-            <div className="p-4 text-[11px] opacity-60 border-t border-sidebar-border">v1.0 · Mock mode</div>
+            <div className="p-3 border-t border-sidebar-border text-[10px] text-sidebar-foreground/30 px-4">VendorBridge v1.0 · © 2026</div>
           </SheetContent>
         </Sheet>
         <h1 className="text-lg font-semibold">{title}</h1>

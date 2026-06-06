@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_app/purchase-orders")({ component: POView });
 
 function POView() {
-  const { documents, quotations, vendors, rfqs, role } = useStore();
+  const { documents, quotations, vendors, rfqs, role, updateDocument, log } = useStore();
   const [selectedId, setSelectedId] = useState(documents[0]?.id ?? "");
 
   const doc = documents.find(d => d.id === selectedId) || documents[0];
@@ -153,9 +153,9 @@ function POView() {
                           size="sm"
                           className="bg-success text-success-foreground hover:bg-success/90"
                           onClick={() => {
-                            doc.status = "Paid"; // mutate state directly for instant feedback
+                            updateDocument(doc.id, { status: "Paid" });
+                            log({ type: "po", message: `PO ${doc.poNumber} marked as PAID by ${role}` });
                             toast.success(`PO ${doc.poNumber} successfully marked as PAID!`);
-                            setSelectedId(doc.id); // trigger rerender
                           }}
                         >
                           Mark as Paid

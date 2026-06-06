@@ -16,6 +16,7 @@ import { Route as AppVendorsRouteImport } from './routes/_app.vendors'
 import { Route as AppRfqsRouteImport } from './routes/_app.rfqs'
 import { Route as AppReportsRouteImport } from './routes/_app.reports'
 import { Route as AppQuotationsRouteImport } from './routes/_app.quotations'
+import { Route as AppQuotationComparisonRouteImport } from './routes/_app.quotation-comparison'
 import { Route as AppPurchaseOrdersRouteImport } from './routes/_app.purchase-orders'
 import { Route as AppInvoicesRouteImport } from './routes/_app.invoices'
 import { Route as AppApprovalsRouteImport } from './routes/_app.approvals'
@@ -55,6 +56,11 @@ const AppQuotationsRoute = AppQuotationsRouteImport.update({
   path: '/quotations',
   getParentRoute: () => AppRoute,
 } as any)
+const AppQuotationComparisonRoute = AppQuotationComparisonRouteImport.update({
+  id: '/quotation-comparison',
+  path: '/quotation-comparison',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPurchaseOrdersRoute = AppPurchaseOrdersRouteImport.update({
   id: '/purchase-orders',
   path: '/purchase-orders',
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/approvals': typeof AppApprovalsRoute
   '/invoices': typeof AppInvoicesRoute
   '/purchase-orders': typeof AppPurchaseOrdersRoute
+  '/quotation-comparison': typeof AppQuotationComparisonRoute
   '/quotations': typeof AppQuotationsRoute
   '/reports': typeof AppReportsRoute
   '/rfqs': typeof AppRfqsRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/approvals': typeof AppApprovalsRoute
   '/invoices': typeof AppInvoicesRoute
   '/purchase-orders': typeof AppPurchaseOrdersRoute
+  '/quotation-comparison': typeof AppQuotationComparisonRoute
   '/quotations': typeof AppQuotationsRoute
   '/reports': typeof AppReportsRoute
   '/rfqs': typeof AppRfqsRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/_app/approvals': typeof AppApprovalsRoute
   '/_app/invoices': typeof AppInvoicesRoute
   '/_app/purchase-orders': typeof AppPurchaseOrdersRoute
+  '/_app/quotation-comparison': typeof AppQuotationComparisonRoute
   '/_app/quotations': typeof AppQuotationsRoute
   '/_app/reports': typeof AppReportsRoute
   '/_app/rfqs': typeof AppRfqsRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/approvals'
     | '/invoices'
     | '/purchase-orders'
+    | '/quotation-comparison'
     | '/quotations'
     | '/reports'
     | '/rfqs'
@@ -134,6 +144,7 @@ export interface FileRouteTypes {
     | '/approvals'
     | '/invoices'
     | '/purchase-orders'
+    | '/quotation-comparison'
     | '/quotations'
     | '/reports'
     | '/rfqs'
@@ -147,6 +158,7 @@ export interface FileRouteTypes {
     | '/_app/approvals'
     | '/_app/invoices'
     | '/_app/purchase-orders'
+    | '/_app/quotation-comparison'
     | '/_app/quotations'
     | '/_app/reports'
     | '/_app/rfqs'
@@ -210,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppQuotationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/quotation-comparison': {
+      id: '/_app/quotation-comparison'
+      path: '/quotation-comparison'
+      fullPath: '/quotation-comparison'
+      preLoaderRoute: typeof AppQuotationComparisonRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/purchase-orders': {
       id: '/_app/purchase-orders'
       path: '/purchase-orders'
@@ -246,6 +265,7 @@ interface AppRouteChildren {
   AppApprovalsRoute: typeof AppApprovalsRoute
   AppInvoicesRoute: typeof AppInvoicesRoute
   AppPurchaseOrdersRoute: typeof AppPurchaseOrdersRoute
+  AppQuotationComparisonRoute: typeof AppQuotationComparisonRoute
   AppQuotationsRoute: typeof AppQuotationsRoute
   AppReportsRoute: typeof AppReportsRoute
   AppRfqsRoute: typeof AppRfqsRoute
@@ -258,6 +278,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppApprovalsRoute: AppApprovalsRoute,
   AppInvoicesRoute: AppInvoicesRoute,
   AppPurchaseOrdersRoute: AppPurchaseOrdersRoute,
+  AppQuotationComparisonRoute: AppQuotationComparisonRoute,
   AppQuotationsRoute: AppQuotationsRoute,
   AppReportsRoute: AppReportsRoute,
   AppRfqsRoute: AppRfqsRoute,

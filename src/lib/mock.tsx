@@ -87,6 +87,7 @@ interface State {
   addRFQ: (r: Omit<RFQ, "id" | "createdAt" | "status">) => void;
   addQuotation: (q: Omit<Quotation, "id" | "submittedAt" | "status">) => void;
   updateApproval: (id: string, patch: Partial<Approval>) => void;
+  updateDocument: (id: string, patch: Partial<PurchaseDoc>) => void;
   addProfile: (p: Omit<Profile, "id">) => void;
   log: (l: Omit<ActivityLog, "id" | "timestamp">) => void;
   refreshData: () => Promise<void>;
@@ -397,17 +398,14 @@ export function MockProvider({ children }: { children: ReactNode }) {
       }
 
       if (dbDocs) {
-        setDocuments(dbDocs.map(d => {
-          const q = dbQuotations?.find(quot => quot.id === d.quotation_id);
-          return {
-            id: d.id,
-            poNumber: `PO-2026-${String(d.po_number).padStart(4, "0")}`,
-            quotationId: d.quotation_id,
-            vendorId: q?.vendor_id || "v1",
-            date: new Date(d.created_at).toISOString().split('T')[0],
-            status: d.po_status === "Paid" ? "Paid" : "Pending Payment",
-          };
-        }));
+        setDocuments(dbDocs.map(d => ({
+          id: d.id,
+          poNumber: `PO-2026-${String(d.po_number).padStart(4, "0")}`,
+          quotationId: d.quotation_id,
+          vendorId: d.vendor_id || "",
+          date: new Date(d.created_at).toISOString().split('T')[0],
+          status: d.po_status === "Paid" ? "Paid" : "Pending Payment",
+        })));
       }
 
       if (dbLogs) {
@@ -599,6 +597,23 @@ export function MockProvider({ children }: { children: ReactNode }) {
             throw error;
           }
           console.log("Approval updated in Supabase successfully:", id);
+        } catch (e) {
+          console.warn("Supabase update failed, local state updated:", e);
+        }
+      }
+    },
+    updateDocument: async (id, patch) => {
+      setDocuments((p) => p.map((d) => d.id === id ? { ...d, ...patch } : d));
+      if (supabase) {
+        try {
+          const { error } = await supabase.from("procurement_documents").update({
+            po_status: patch.status,
+          }).eq("id", id);
+          if (error) {
+            console.error("Supabase document update error:", error);
+            throw error;
+          }
+          console.log("Document updated in Supabase successfully:", id);
         } catch (e) {
           console.warn("Supabase update failed, local state updated:", e);
         }
