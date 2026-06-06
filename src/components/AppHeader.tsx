@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useStore, type Role } from "@/lib/mock";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Bell, UserCircle2, Menu, LayoutDashboard, Users, FileText, FileCheck2, ShieldCheck, ShoppingCart, Receipt, BarChart3, Activity } from "lucide-react";
@@ -12,6 +13,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const ROLES: Role[] = ["Procurement Officer", "Vendor", "Manager", "Admin"];
@@ -30,9 +32,37 @@ const NAV_ITEMS = [
 ];
 
 export function AppHeader({ title }: { title: string }) {
-  const { role, setRole, currentProfile, setCurrentProfile } = useStore();
+  const { role, setRole, currentProfile, setCurrentProfile, logs } = useStore();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const [lastReadTime, setLastReadTime] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("vendorbridge_notifications_read_time");
+      return saved ? Number(saved) : 0;
+    }
+    return 0;
+  });
+
+  const [clearedLogIds, setClearedLogIds] = useState<string[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("vendorbridge_cleared_notifications");
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
+
+  const visibleLogs = logs.filter((log) => !clearedLogIds.includes(log.id));
+  const hasUnread = visibleLogs.some(
+    (log) => new Date(log.timestamp).getTime() > lastReadTime
+  );
+
+  const handleClearAll = () => {
+    const allLogIds = logs.map((l) => l.id);
+    setClearedLogIds(allLogIds);
+    localStorage.setItem("vendorbridge_cleared_notifications", JSON.stringify(allLogIds));
+    toast.success("Notifications cleared");
+  };
 
   return (
     <header className="h-14 border-b bg-card flex items-center justify-between px-6 sticky top-0 z-20">
@@ -82,9 +112,56 @@ export function AppHeader({ title }: { title: string }) {
             {ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
           </SelectContent>
         </Select>
-        <button className="size-9 grid place-items-center rounded-md hover:bg-muted" aria-label="Notifications">
-          <Bell className="size-4" />
-        </button>
+        <Popover onOpenChange={(open) => {
+          if (open) {
+            const nowTime = Date.now();
+            setLastReadTime(nowTime);
+            localStorage.setItem("vendorbridge_notifications_read_time", String(nowTime));
+          }
+        }}>
+          <PopoverTrigger asChild>
+            <button className="size-9 grid place-items-center rounded-md hover:bg-muted relative cursor-pointer" aria-label="Notifications">
+              <Bell className="size-4" />
+              {hasUnread && (
+                <span className="absolute top-1.5 right-1.5 size-2 bg-destructive rounded-full animate-pulse" />
+              )}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-80 p-0 shadow-lg border">
+            <div className="px-4 py-3 border-b flex justify-between items-center bg-muted/40">
+              <span className="font-semibold text-sm">Notifications</span>
+              <div className="flex items-center gap-2">
+                {visibleLogs.length > 0 && (
+                  <button
+                    onClick={handleClearAll}
+                    className="text-[10px] text-muted-foreground hover:text-foreground underline cursor-pointer"
+                  >
+                    Clear All
+                  </button>
+                )}
+                <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-medium">
+                  {visibleLogs.length} events
+                </span>
+              </div>
+            </div>
+            <div className="max-h-[300px] overflow-y-auto divide-y">
+              {visibleLogs.length === 0 ? (
+                <div className="p-8 text-center text-xs text-muted-foreground">
+                  No new notifications
+                </div>
+              ) : (
+                visibleLogs.slice(0, 10).map((log) => (
+                  <div key={log.id} className="p-3 text-xs hover:bg-muted/30 transition-colors">
+                    <p className="text-foreground leading-relaxed">{log.message}</p>
+                    <span className="text-[10px] text-muted-foreground mt-1 block">
+                      {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

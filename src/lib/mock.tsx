@@ -338,8 +338,51 @@ export function MockProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (isSupabaseConfigured) {
+    if (isSupabaseConfigured && supabase) {
       refreshData();
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          try {
+            // Fetch profile
+            const { data: dbProfile } = await supabase
+              .from("profiles")
+              .select("*")
+              .eq("id", session.user.id)
+              .single();
+
+            if (dbProfile) {
+              const profile = {
+                id: dbProfile.id,
+                firstName: dbProfile.first_name || session.user.email?.split("@")[0] || "User",
+                email: dbProfile.email || session.user.email || "",
+                phone: dbProfile.phone_number || "",
+                role: (dbProfile.role || "Procurement Officer") as Role,
+                country: dbProfile.country || "",
+              };
+              setCurrentProfile(profile);
+              setRole(profile.role);
+            } else {
+              const mockProfile = {
+                id: session.user.id,
+                firstName: session.user.email?.split("@")[0] || "User",
+                email: session.user.email || "",
+                phone: "+91 00000 00000",
+                role: "Procurement Officer" as Role,
+                country: "India",
+              };
+              setCurrentProfile(mockProfile);
+              setRole("Procurement Officer");
+            }
+          } catch (e) {
+            console.warn("Error loading profile from auth session change:", e);
+          }
+        }
+      });
+
+      return () => {
+        subscription.unsubscribe();
+      };
     }
   }, []);
 
