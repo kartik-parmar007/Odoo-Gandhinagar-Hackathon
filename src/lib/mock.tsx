@@ -90,6 +90,8 @@ interface State {
   log: (l: Omit<ActivityLog, "id" | "timestamp">) => void;
   refreshData: () => Promise<void>;
   isDbConnected: boolean;
+  currentProfile: Profile;
+  setCurrentProfile: (p: Profile) => void;
 }
 
 const Ctx = createContext<State | null>(null);
@@ -154,6 +156,7 @@ const seedProfiles: Profile[] = [
 export function MockProvider({ children }: { children: ReactNode }) {
   const [role, setRole] = useState<Role>("Procurement Officer");
   const [profiles, setProfiles] = useState(seedProfiles);
+  const [currentProfile, setCurrentProfile] = useState<Profile>(seedProfiles[0]);
   const [vendors, setVendors] = useState(seedVendors);
   const [rfqs, setRFQs] = useState(seedRFQs);
   const [quotations, setQuotations] = useState(seedQuotations);
@@ -161,6 +164,20 @@ export function MockProvider({ children }: { children: ReactNode }) {
   const [documents, setDocuments] = useState(seedDocs);
   const [logs, setLogs] = useState(seedLogs);
   const [isDbConnected, setIsDbConnected] = useState(false);
+
+  const changeRole = (r: Role) => {
+    setRole(r);
+    setCurrentProfile((prev) => {
+      const matched = profiles.find((p) => p.role === r);
+      if (matched) return matched;
+      return {
+        ...prev,
+        firstName: r === "Admin" ? "Kartik Parmar" : prev.firstName,
+        email: r === "Admin" ? "kartikparmar.dev@gmail.com" : prev.email,
+        role: r,
+      };
+    });
+  };
 
   // Sync data from Supabase
   const refreshData = async () => {
@@ -304,7 +321,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<State>(() => ({
     role,
-    setRole,
+    setRole: changeRole,
     profiles,
     vendors,
     rfqs,
@@ -314,6 +331,8 @@ export function MockProvider({ children }: { children: ReactNode }) {
     logs,
     isDbConnected,
     refreshData,
+    currentProfile,
+    setCurrentProfile,
     addVendor: async (v) => {
       const newId = uid();
       const mappedVendor: Vendor = { ...v, id: newId };
@@ -442,7 +461,7 @@ export function MockProvider({ children }: { children: ReactNode }) {
         }
       }
     },
-  }), [role, profiles, vendors, rfqs, quotations, approvals, documents, logs, isDbConnected]);
+  }), [role, profiles, currentProfile, vendors, rfqs, quotations, approvals, documents, logs, isDbConnected]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

@@ -13,10 +13,67 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({ component: Auth });
 
+import { supabase } from "@/lib/supabase";
+
 function Auth() {
   const navigate = useNavigate();
-  const { addProfile, setRole } = useStore();
+  const { addProfile, setRole, setCurrentProfile, profiles, isDbConnected } = useStore();
+  const [email, setEmail] = useState("akshat@vendorbridge.app");
+  const [password, setPassword] = useState("demo1234");
   const [signup, setSignup] = useState({ firstName: "", email: "", phone: "", role: "Procurement Officer" as Role, country: "India", notes: "" });
+
+  const handleLogin = async () => {
+    if (email === "kartikparmar.dev@gmail.com" && password === "Kartik12345") {
+      const adminProfile = {
+        id: "admin-kartik",
+        firstName: "Kartik Parmar",
+        email: "kartikparmar.dev@gmail.com",
+        phone: "+91 99999 88888",
+        role: "Admin" as Role,
+        country: "India",
+      };
+
+      setCurrentProfile(adminProfile);
+      setRole("Admin");
+
+      if (supabase) {
+        try {
+          await supabase.from("profiles").upsert({
+            id: "00000000-0000-0000-0000-000000000000",
+            first_name: "Kartik Parmar",
+            email: "kartikparmar.dev@gmail.com",
+            role: "Admin",
+            phone_number: "+91 99999 88888",
+            country: "India"
+          });
+        } catch (err) {
+          console.warn("Could not upsert admin profile to Supabase:", err);
+        }
+      }
+
+      toast.success("Welcome back, Admin!");
+      navigate({ to: "/" });
+    } else {
+      const matched = profiles.find((p) => p.email.toLowerCase() === email.toLowerCase());
+      if (matched) {
+        setCurrentProfile(matched);
+        setRole(matched.role);
+      } else {
+        const mockProfile = {
+          id: "p-mock-" + Math.random().toString(36).slice(2, 6),
+          firstName: email.split("@")[0],
+          email: email,
+          phone: "+91 00000 00000",
+          role: "Procurement Officer" as Role,
+          country: "India",
+        };
+        setCurrentProfile(mockProfile);
+        setRole("Procurement Officer");
+      }
+      toast.success("Welcome back!");
+      navigate({ to: "/" });
+    }
+  };
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -36,10 +93,10 @@ function Auth() {
           <Tabs defaultValue="login">
             <TabsList className="grid grid-cols-2 w-full"><TabsTrigger value="login">Login</TabsTrigger><TabsTrigger value="signup">Sign up</TabsTrigger></TabsList>
             <TabsContent value="login" className="space-y-3 mt-5">
-              <div><Label>Email</Label><Input type="email" defaultValue="akshat@vendorbridge.app" /></div>
-              <div><Label>Password</Label><Input type="password" defaultValue="demo1234" /></div>
-              <Button className="w-full" onClick={() => { toast.success("Welcome back!"); navigate({ to: "/" }); }}>Sign In</Button>
-              <p className="text-xs text-muted-foreground text-center">Mock auth · any credentials work</p>
+              <div><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
+              <div><Label>Password</Label><Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /></div>
+              <Button className="w-full" onClick={handleLogin}>Sign In</Button>
+              <p className="text-xs text-muted-foreground text-center">Admin credentials: kartikparmar.dev@gmail.com / Kartik12345</p>
             </TabsContent>
             <TabsContent value="signup" className="space-y-3 mt-5">
               <div className="flex justify-center">
