@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, Users, FileText, FileCheck2, ShieldCheck,
-  ShoppingCart, Receipt, BarChart3, Activity, GitCompareArrows, Wifi, WifiOff
+  ShoppingCart, Receipt, BarChart3, Activity, GitCompareArrows
 } from "lucide-react";
 import type { Role } from "@/lib/mock";
 import { useStore } from "@/lib/mock";
@@ -25,7 +25,7 @@ const ITEMS: Item[] = [
 ];
 
 export function AppSidebar() {
-  const { role, isDbConnected } = useStore();
+  const { role } = useStore();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items = ITEMS.filter((i) => i.roles.includes(role));
 
@@ -70,17 +70,7 @@ export function AppSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-3 border-t border-sidebar-border space-y-2">
-        <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-sidebar-accent/40">
-          {isDbConnected ? (
-            <Wifi className="size-3 text-success shrink-0" />
-          ) : (
-            <WifiOff className="size-3 text-warning-foreground shrink-0" />
-          )}
-          <span className="text-[10px] font-medium">
-            {isDbConnected ? "Live · Supabase Connected" : "Offline · Local Data"}
-          </span>
-        </div>
+      <div className="p-3 border-t border-sidebar-border">
         <div className="text-[10px] text-sidebar-foreground/30 px-2">
           VendorBridge v1.0 · © 2026
         </div>
