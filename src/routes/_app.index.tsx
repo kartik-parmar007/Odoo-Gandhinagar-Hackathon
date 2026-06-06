@@ -85,16 +85,18 @@ function Dashboard() {
 
         <Card className="p-5">
           <h3 className="font-semibold mb-3">Recent Purchase Orders</h3>
-          <table className="w-full text-sm">
-            <thead className="text-xs text-muted-foreground border-b">
-              <tr><th className="text-left py-2">PO #</th><th className="text-left">Vendor</th><th className="text-left">Amount</th><th className="text-left">Status</th></tr>
-            </thead>
-            <tbody>
-              <tr className="border-b"><td className="py-2">PO-2026-0061</td><td>Infra Supplies Pvt Ltd</td><td>₹1,84,000</td><td><span className="px-2 py-0.5 rounded-full bg-warning/15 text-xs">Pending Payment</span></td></tr>
-              <tr className="border-b"><td className="py-2">PO-2026-0060</td><td>TechCore Ltd</td><td>₹1,50,000</td><td><span className="px-2 py-0.5 rounded-full bg-success/15 text-xs">Paid</span></td></tr>
-              <tr><td className="py-2">PO-2026-0059</td><td>FastLog Logistics</td><td>₹54,000</td><td><span className="px-2 py-0.5 rounded-full bg-muted text-xs">Draft</span></td></tr>
-            </tbody>
-          </table>
+          <div className="overflow-x-auto -mx-5 px-5">
+            <table className="w-full text-sm min-w-[500px]">
+              <thead className="text-xs text-muted-foreground border-b">
+                <tr><th className="text-left py-2">PO #</th><th className="text-left">Vendor</th><th className="text-left">Amount</th><th className="text-left">Status</th></tr>
+              </thead>
+              <tbody>
+                <tr className="border-b"><td className="py-2">PO-2026-0061</td><td>Infra Supplies Pvt Ltd</td><td>₹1,84,000</td><td><span className="px-2 py-0.5 rounded-full bg-warning/15 text-xs">Pending Payment</span></td></tr>
+                <tr className="border-b"><td className="py-2">PO-2026-0060</td><td>TechCore Ltd</td><td>₹1,50,000</td><td><span className="px-2 py-0.5 rounded-full bg-success/15 text-xs">Paid</span></td></tr>
+                <tr><td className="py-2">PO-2026-0059</td><td>FastLog Logistics</td><td>₹54,000</td><td><span className="px-2 py-0.5 rounded-full bg-muted text-xs">Draft</span></td></tr>
+              </tbody>
+            </table>
+          </div>
         </Card>
       </main>
     </>

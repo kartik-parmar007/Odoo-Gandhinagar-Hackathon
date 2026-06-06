@@ -116,7 +116,8 @@ function Reports() {
 
         <Card className="p-5">
           <h3 className="font-semibold mb-3">Top Vendors by Spend</h3>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto -mx-5 px-5">
+            <table className="w-full text-sm min-w-[500px]">
             <thead className="text-xs text-muted-foreground border-b">
               <tr>
                 <th className="text-left py-2">Vendor Name</th>
@@ -134,7 +135,8 @@ function Reports() {
               ))}
             </tbody>
           </table>
-        </Card>
+        </div>
+      </Card>
       </main>
     </>
   );

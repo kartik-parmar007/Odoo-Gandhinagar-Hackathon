@@ -31,7 +31,7 @@ function POView() {
       <AppHeader title="Purchase Orders & Invoices" />
       <main className="p-6 grid lg:grid-cols-3 gap-4">
         {/* Left Side: PO Queue */}
-        <Card className="p-4 space-y-2 h-[calc(100vh-7rem)] overflow-y-auto">
+        <Card className="p-4 space-y-2 lg:h-[calc(100vh-7rem)] h-[250px] overflow-y-auto">
           <h3 className="font-semibold mb-2">Purchase Orders</h3>
           {documents.map((d) => {
             const vend = vendors.find((x) => x.id === d.vendorId);
@@ -102,8 +102,8 @@ function POView() {
                 </div>
 
                 {/* Line Items */}
-                <div className="border rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
+                <div className="border rounded-lg overflow-x-auto">
+                  <table className="w-full text-sm min-w-[500px]">
                     <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
                       <tr>
                         <th className="text-left p-3">Item Description</th>

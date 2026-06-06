@@ -92,8 +92,8 @@ function SubmitView() {
 
       <div>
         <Label>Your Quotation Lines</Label>
-        <div className="border rounded-md overflow-hidden mt-2">
-          <table className="w-full text-sm">
+        <div className="border rounded-md overflow-x-auto mt-2">
+          <table className="w-full text-sm min-w-[500px]">
             <thead className="bg-muted/40 text-xs"><tr><th className="text-left p-2">Item</th><th className="text-left p-2">Qty</th><th className="text-left p-2">Unit Price</th><th className="text-left p-2">Total</th></tr></thead>
             <tbody>
               {lines.map((l, i) => (
@@ -161,7 +161,7 @@ function CompareView() {
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm border rounded-md">
+            <table className="w-full text-sm border rounded-md min-w-[700px]">
               <thead>
                 <tr className="bg-muted/40 text-xs">
                   <th className="text-left p-3">Criteria</th>

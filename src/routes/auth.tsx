@@ -18,8 +18,8 @@ import { supabase } from "@/lib/supabase";
 function Auth() {
   const navigate = useNavigate();
   const { currentProfile, addProfile, setRole, setCurrentProfile, profiles, isDbConnected } = useStore();
-  const [email, setEmail] = useState("akshat@vendorbridge.app");
-  const [password, setPassword] = useState("demo1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [signup, setSignup] = useState({ firstName: "", email: "", phone: "", role: "Procurement Officer" as Role, country: "India", notes: "" });
 
   useEffect(() => {

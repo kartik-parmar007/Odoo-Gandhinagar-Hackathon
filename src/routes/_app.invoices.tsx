@@ -13,7 +13,8 @@ function Invoices() {
       <main className="p-6">
         <Card className="p-5">
           <h3 className="font-semibold mb-3">Generated Invoices</h3>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto -mx-5 px-5">
+            <table className="w-full text-sm min-w-[500px]">
             <thead className="text-xs text-muted-foreground border-b"><tr><th className="text-left py-2">PO #</th><th className="text-left">Vendor</th><th className="text-left">Date</th><th className="text-left">Status</th><th></th></tr></thead>
             <tbody>
               {documents.map((d) => {
@@ -30,8 +31,9 @@ function Invoices() {
               })}
             </tbody>
           </table>
-        </Card>
-      </main>
-    </>
+        </div>
+      </Card>
+    </main>
+  </>
   );
 }

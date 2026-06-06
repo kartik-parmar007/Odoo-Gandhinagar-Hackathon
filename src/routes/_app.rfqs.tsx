@@ -108,7 +108,8 @@ function RFQs() {
           </Card>
         ) : (
           <Card className="p-5">
-            <table className="w-full text-sm">
+            <div className="overflow-x-auto -mx-5 px-5">
+              <table className="w-full text-sm min-w-[600px]">
               <thead className="text-xs text-muted-foreground border-b">
                 <tr><th className="text-left py-2 px-2">RFQ #</th><th className="text-left">Title</th><th className="text-left">Category</th><th className="text-left">Deadline</th><th className="text-left">Vendors</th><th className="text-left">Status</th></tr>
               </thead>
@@ -125,7 +126,8 @@ function RFQs() {
                 ))}
               </tbody>
             </table>
-          </Card>
+          </div>
+        </Card>
         )}
       </main>
     </>
