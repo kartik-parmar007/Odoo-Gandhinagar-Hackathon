@@ -1,4 +1,12 @@
-import { createContext, useContext, useMemo, useState, useEffect, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
 export type Role = "Admin" | "Procurement Officer" | "Vendor" | "Manager";
@@ -676,7 +684,6 @@ export function MockProvider({ children }: { children: ReactNode }) {
     },
     [profiles],
   );
-
 
   // Sync data from Supabase
   const refreshData = async () => {
