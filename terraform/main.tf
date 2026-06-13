@@ -157,20 +157,48 @@ resource "local_file" "private_key" {
   file_permission = "0400"
 }
 
-# 9. EC2 Server (AWS Free Tier - t2.micro)
+# 9. IAM Role and Instance Profile for EC2 to pull from ECR
+resource "aws_iam_role" "ec2_ecr_role" {
+  name = "devops-ec2-ecr-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_read_only" {
+  role       = aws_iam_role.ec2_ecr_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "devops-ec2-instance-profile"
+  role = aws_iam_role.ec2_ecr_role.name
+}
+
+# 10. EC2 Server (AWS Free Tier - t2.micro)
 resource "aws_instance" "web_server" {
-  ami           = var.ami_id
-  instance_type = "t2.micro" # Free Tier eligible
-
-  subnet_id              = aws_subnet.public_subnet.id
+  ami                  = var.ami_id
+  instance_type        = "t2.micro" # Free Tier eligible
+  subnet_id            = aws_subnet.public_subnet.id
   vpc_security_group_ids = [aws_security_group.web_sg.id]
-  key_name               = aws_key_pair.generated_key.key_name
+  key_name             = aws_key_pair.generated_key.key_name
+  iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
 
-  # Setup script to automatically install Docker & Docker Compose
+  # Setup script to automatically install Docker, Docker Compose, and AWS CLI
   user_data = <<-EOF
               #!/bin/bash
               sudo apt-get update -y
-              sudo apt-get install -y docker.io
+              sudo apt-get install -y docker.io unzip
               sudo systemctl start docker
               sudo systemctl enable docker
               sudo usermod -aG docker ubuntu
@@ -178,6 +206,11 @@ resource "aws_instance" "web_server" {
               # Install Docker Compose
               sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
               sudo chmod +x /usr/local/bin/docker-compose
+              
+              # Install AWS CLI (needed for ECR login helper)
+              curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+              unzip awscliv2.zip
+              sudo ./aws/install
               EOF
 
   tags = {
