@@ -1,7 +1,27 @@
 import { useState, useEffect } from "react";
 import { useStore, type Role } from "@/lib/mock";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, UserCircle2, Menu, LayoutDashboard, Users, FileText, FileCheck2, ShieldCheck, ShoppingCart, Receipt, BarChart3, Activity, GitCompareArrows } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Bell,
+  UserCircle2,
+  Menu,
+  LayoutDashboard,
+  Users,
+  FileText,
+  FileCheck2,
+  ShieldCheck,
+  ShoppingCart,
+  Receipt,
+  BarChart3,
+  Activity,
+  GitCompareArrows,
+} from "lucide-react";
 import { useNavigate, useRouterState, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import {
@@ -21,14 +41,39 @@ const ALL: Role[] = ["Procurement Officer", "Vendor", "Manager", "Admin"];
 
 const NAV_ITEMS = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, roles: ALL },
-  { to: "/vendors", label: "Vendors", icon: Users, roles: ["Procurement Officer", "Admin", "Manager"] },
+  {
+    to: "/vendors",
+    label: "Vendors",
+    icon: Users,
+    roles: ["Procurement Officer", "Admin", "Manager"],
+  },
   { to: "/rfqs", label: "RFQs", icon: FileText, roles: ALL },
   { to: "/quotations", label: "Quotations", icon: FileCheck2, roles: ALL },
-  { to: "/quotation-comparison", label: "Compare Quotes", icon: GitCompareArrows, roles: ["Procurement Officer", "Manager", "Admin"] },
+  {
+    to: "/quotation-comparison",
+    label: "Compare Quotes",
+    icon: GitCompareArrows,
+    roles: ["Procurement Officer", "Manager", "Admin"],
+  },
   { to: "/approvals", label: "Approvals", icon: ShieldCheck, roles: ["Manager", "Admin"] },
-  { to: "/purchase-orders", label: "Purchase Orders", icon: ShoppingCart, roles: ["Procurement Officer", "Vendor", "Admin"] },
-  { to: "/invoices", label: "Invoices", icon: Receipt, roles: ["Procurement Officer", "Vendor", "Admin"] },
-  { to: "/reports", label: "Reports", icon: BarChart3, roles: ["Procurement Officer", "Manager", "Admin"] },
+  {
+    to: "/purchase-orders",
+    label: "Purchase Orders",
+    icon: ShoppingCart,
+    roles: ["Procurement Officer", "Vendor", "Admin"],
+  },
+  {
+    to: "/invoices",
+    label: "Invoices",
+    icon: Receipt,
+    roles: ["Procurement Officer", "Vendor", "Admin"],
+  },
+  {
+    to: "/reports",
+    label: "Reports",
+    icon: BarChart3,
+    roles: ["Procurement Officer", "Manager", "Admin"],
+  },
   { to: "/activity", label: "Activity & Logs", icon: Activity, roles: ALL },
 ];
 
@@ -54,9 +99,7 @@ export function AppHeader({ title }: { title: string }) {
   });
 
   const visibleLogs = logs.filter((log) => !clearedLogIds.includes(log.id));
-  const hasUnread = visibleLogs.some(
-    (log) => new Date(log.timestamp).getTime() > lastReadTime
-  );
+  const hasUnread = visibleLogs.some((log) => new Date(log.timestamp).getTime() > lastReadTime);
 
   const handleClearAll = () => {
     const allLogIds = logs.map((l) => l.id);
@@ -70,33 +113,53 @@ export function AppHeader({ title }: { title: string }) {
       <div className="flex items-center">
         <Sheet>
           <SheetTrigger asChild>
-            <button className="md:hidden p-2 rounded-md hover:bg-muted mr-2 cursor-pointer" aria-label="Open menu">
+            <button
+              className="md:hidden p-2 rounded-md hover:bg-muted mr-2 cursor-pointer"
+              aria-label="Open menu"
+            >
               <Menu className="size-5" />
             </button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0 flex flex-col bg-sidebar border-r border-sidebar-border text-sidebar-foreground">
+          <SheetContent
+            side="left"
+            className="w-64 p-0 flex flex-col bg-sidebar border-r border-sidebar-border text-sidebar-foreground"
+          >
             <div className="px-4 py-4 flex items-center gap-3 border-b border-sidebar-border">
-              <img src="/logo.png" alt="VendorBridge" className="size-9 rounded-lg object-contain bg-white/10 p-0.5" />
+              <img
+                src="/logo.png"
+                alt="VendorBridge"
+                className="size-9 rounded-lg object-contain bg-white/10 p-0.5"
+              />
               <div>
                 <div className="font-bold text-base leading-none tracking-tight">VendorBridge</div>
-                <div className="text-[10px] uppercase tracking-widest opacity-50 mt-1 font-medium">Procurement ERP</div>
+                <div className="text-[10px] uppercase tracking-widest opacity-50 mt-1 font-medium">
+                  Procurement ERP
+                </div>
               </div>
             </div>
             <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
-              {NAV_ITEMS.filter(item => item.roles.includes(role)).map((i) => {
+              {NAV_ITEMS.filter((item) => item.roles.includes(role)).map((i) => {
                 const active = i.to === "/" ? pathname === "/" : pathname.startsWith(i.to);
                 return (
-                  <Link key={i.to} to={i.to} className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
-                    active ? "bg-sidebar-primary text-sidebar-primary-foreground" : "text-sidebar-foreground/70 hover:bg-sidebar-accent"
-                  )}>
+                  <Link
+                    key={i.to}
+                    to={i.to}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                      active
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent",
+                    )}
+                  >
                     <i.icon className="size-4" />
                     <span>{i.label}</span>
                   </Link>
                 );
               })}
             </nav>
-            <div className="p-3 border-t border-sidebar-border text-[10px] text-sidebar-foreground/30 px-4">VendorBridge v1.0 · © 2026</div>
+            <div className="p-3 border-t border-sidebar-border text-[10px] text-sidebar-foreground/30 px-4">
+              VendorBridge v1.0 · © 2026
+            </div>
           </SheetContent>
         </Sheet>
         <h1 className="text-lg font-semibold">{title}</h1>
@@ -110,18 +173,27 @@ export function AppHeader({ title }: { title: string }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {ROLES.map((r) => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+            {ROLES.map((r) => (
+              <SelectItem key={r} value={r}>
+                {r}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        <Popover onOpenChange={(open) => {
-          if (open) {
-            const nowTime = Date.now();
-            setLastReadTime(nowTime);
-            localStorage.setItem("vendorbridge_notifications_read_time", String(nowTime));
-          }
-        }}>
+        <Popover
+          onOpenChange={(open) => {
+            if (open) {
+              const nowTime = Date.now();
+              setLastReadTime(nowTime);
+              localStorage.setItem("vendorbridge_notifications_read_time", String(nowTime));
+            }
+          }}
+        >
           <PopoverTrigger asChild>
-            <button className="size-9 grid place-items-center rounded-md hover:bg-muted relative cursor-pointer" aria-label="Notifications">
+            <button
+              className="size-9 grid place-items-center rounded-md hover:bg-muted relative cursor-pointer"
+              aria-label="Notifications"
+            >
               <Bell className="size-4" />
               {hasUnread && (
                 <span className="absolute top-1.5 right-1.5 size-2 bg-destructive rounded-full animate-pulse" />
@@ -155,7 +227,10 @@ export function AppHeader({ title }: { title: string }) {
                   <div key={log.id} className="p-3 text-xs hover:bg-muted/30 transition-colors">
                     <p className="text-foreground leading-relaxed">{log.message}</p>
                     <span className="text-[10px] text-muted-foreground mt-1 block">
-                      {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(log.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
                 ))
@@ -179,17 +254,25 @@ export function AppHeader({ title }: { title: string }) {
             <DropdownMenuSeparator />
             {currentProfile?.avatar && (
               <div className="flex justify-center py-2">
-                <img src={currentProfile.avatar} className="size-16 rounded-full object-cover border animate-fade-in" alt="Avatar" />
+                <img
+                  src={currentProfile.avatar}
+                  className="size-16 rounded-full object-cover border animate-fade-in"
+                  alt="Avatar"
+                />
               </div>
             )}
             <div className="text-xs space-y-1.5 bg-muted/40 p-2.5 rounded-md">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Name:</span>
-                <span className="font-semibold text-foreground">{currentProfile?.firstName || "Akshat"}</span>
+                <span className="font-semibold text-foreground">
+                  {currentProfile?.firstName || "Akshat"}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Email:</span>
-                <span className="font-mono text-[10px] text-foreground">{currentProfile?.email || "akshat@vendorbridge.app"}</span>
+                <span className="font-mono text-[10px] text-foreground">
+                  {currentProfile?.email || "akshat@vendorbridge.app"}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Active Role:</span>
@@ -210,12 +293,12 @@ export function AppHeader({ title }: { title: string }) {
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <button 
+              <button
                 onClick={() => {
                   setCurrentProfile(null);
                   toast.success("Signed out successfully");
                   navigate({ to: "/auth" });
-                }} 
+                }}
                 className="w-full text-left text-destructive font-medium cursor-pointer"
               >
                 Sign Out / Switch Profile

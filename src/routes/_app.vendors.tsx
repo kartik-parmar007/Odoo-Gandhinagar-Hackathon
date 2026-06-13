@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { Star, Plus, Search } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -16,7 +22,12 @@ export const Route = createFileRoute("/_app/vendors")({ component: Vendors });
 function Rating({ value }: { value: number }) {
   return (
     <div className="flex items-center gap-0.5">
-      {[1,2,3,4,5].map(i => <Star key={i} className={`size-3.5 ${i <= Math.round(value) ? "fill-warning text-warning" : "text-muted-foreground/40"}`} />)}
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star
+          key={i}
+          className={`size-3.5 ${i <= Math.round(value) ? "fill-warning text-warning" : "text-muted-foreground/40"}`}
+        />
+      ))}
       <span className="text-xs text-muted-foreground ml-1">{value.toFixed(1)}</span>
     </div>
   );
@@ -29,11 +40,14 @@ function Vendors() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: "", category: "", gst: "", contact: "" });
 
-  const categories = ["all", ...Array.from(new Set(vendors.map(v => v.category)))];
+  const categories = ["all", ...Array.from(new Set(vendors.map((v) => v.category)))];
 
-  const filtered = vendors.filter(v => {
-    const matchesSearch = v.name.toLowerCase().includes(q.toLowerCase()) || v.gst.toLowerCase().includes(q.toLowerCase());
-    const matchesCategory = categoryFilter === "all" || v.category.toLowerCase() === categoryFilter.toLowerCase();
+  const filtered = vendors.filter((v) => {
+    const matchesSearch =
+      v.name.toLowerCase().includes(q.toLowerCase()) ||
+      v.gst.toLowerCase().includes(q.toLowerCase());
+    const matchesCategory =
+      categoryFilter === "all" || v.category.toLowerCase() === categoryFilter.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -53,18 +67,52 @@ function Vendors() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold">Vendor Registry</h2>
-            <p className="text-sm text-muted-foreground">Manage supplier profiles and registrations</p>
+            <p className="text-sm text-muted-foreground">
+              Manage supplier profiles and registrations
+            </p>
           </div>
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild><Button><Plus className="size-4" /> Add Vendor</Button></SheetTrigger>
+            <SheetTrigger asChild>
+              <Button>
+                <Plus className="size-4" /> Add Vendor
+              </Button>
+            </SheetTrigger>
             <SheetContent>
-              <SheetHeader><SheetTitle>Register New Vendor</SheetTitle></SheetHeader>
+              <SheetHeader>
+                <SheetTitle>Register New Vendor</SheetTitle>
+              </SheetHeader>
               <div className="p-4 space-y-3">
-                <div><Label>Vendor Name</Label><Input value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} /></div>
-                <div><Label>Category</Label><Input value={form.category} onChange={(e) => setForm({...form, category: e.target.value})} /></div>
-                <div><Label>GST Number</Label><Input value={form.gst} onChange={(e) => setForm({...form, gst: e.target.value})} /></div>
-                <div><Label>Contact</Label><Input value={form.contact} onChange={(e) => setForm({...form, contact: e.target.value})} /></div>
-                <Button onClick={submit} className="w-full">Register Vendor</Button>
+                <div>
+                  <Label>Vendor Name</Label>
+                  <Input
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Category</Label>
+                  <Input
+                    value={form.category}
+                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>GST Number</Label>
+                  <Input
+                    value={form.gst}
+                    onChange={(e) => setForm({ ...form, gst: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Contact</Label>
+                  <Input
+                    value={form.contact}
+                    onChange={(e) => setForm({ ...form, contact: e.target.value })}
+                  />
+                </div>
+                <Button onClick={submit} className="w-full">
+                  Register Vendor
+                </Button>
               </div>
             </SheetContent>
           </Sheet>
@@ -74,7 +122,12 @@ function Vendors() {
           <div className="flex flex-col sm:flex-row gap-3 mb-4">
             <div className="relative flex-1">
               <Search className="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder="Search vendors by name or GST…" className="pl-9" value={q} onChange={(e) => setQ(e.target.value)} />
+              <Input
+                placeholder="Search vendors by name or GST…"
+                className="pl-9"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
             </div>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="w-[180px] capitalize">
@@ -82,7 +135,9 @@ function Vendors() {
               </SelectTrigger>
               <SelectContent>
                 {categories.map((c) => (
-                  <SelectItem key={c} value={c} className="capitalize">{c === "all" ? "All Categories" : c}</SelectItem>
+                  <SelectItem key={c} value={c} className="capitalize">
+                    {c === "all" ? "All Categories" : c}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -107,9 +162,21 @@ function Vendors() {
                     <td>{v.category}</td>
                     <td className="font-mono text-xs">{v.gst}</td>
                     <td>{v.contact}</td>
-                    <td><Rating value={v.rating} /></td>
-                    <td><span className={`px-2 py-0.5 rounded-full text-xs ${v.status === "Active" ? "bg-success/15 text-success" : v.status === "Pending" ? "bg-warning/15" : "bg-destructive/15 text-destructive"}`}>{v.status}</span></td>
-                    <td><Button variant="ghost" size="sm">View</Button></td>
+                    <td>
+                      <Rating value={v.rating} />
+                    </td>
+                    <td>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-xs ${v.status === "Active" ? "bg-success/15 text-success" : v.status === "Pending" ? "bg-warning/15" : "bg-destructive/15 text-destructive"}`}
+                      >
+                        {v.status}
+                      </span>
+                    </td>
+                    <td>
+                      <Button variant="ghost" size="sm">
+                        View
+                      </Button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

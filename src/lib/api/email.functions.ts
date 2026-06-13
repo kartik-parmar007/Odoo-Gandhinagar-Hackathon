@@ -7,7 +7,7 @@ export const sendEmailOtp = createServerFn({ method: "POST" })
       email: z.string().email(),
       otp: z.string().length(6),
       type: z.enum(["verification", "reset"]),
-    })
+    }),
   )
   .handler(async ({ data }) => {
     const { email, otp, type } = data;
@@ -21,7 +21,8 @@ export const sendEmailOtp = createServerFn({ method: "POST" })
       return {
         success: false,
         simulated: true,
-        message: "SMTP/Resend API Key is not configured on the server. Fell back to simulation mode.",
+        message:
+          "SMTP/Resend API Key is not configured on the server. Fell back to simulation mode.",
       };
     }
 
@@ -35,9 +36,10 @@ export const sendEmailOtp = createServerFn({ method: "POST" })
         body: JSON.stringify({
           from: "VendorBridge Auth <onboarding@resend.dev>",
           to: email,
-          subject: type === "verification" 
-            ? "Verify Your Email - VendorBridge" 
-            : "Reset Your Password - VendorBridge",
+          subject:
+            type === "verification"
+              ? "Verify Your Email - VendorBridge"
+              : "Reset Your Password - VendorBridge",
           html: `
             <div style="font-family: sans-serif; padding: 24px; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px;">
               <h2 style="color: #0f172a; margin-bottom: 16px;">VendorBridge Authentication</h2>

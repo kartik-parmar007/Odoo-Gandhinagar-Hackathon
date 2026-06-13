@@ -7,8 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Camera, Mail, Lock, ShieldAlert, ArrowLeft, KeyRound, CheckCircle2, Send } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Camera,
+  Mail,
+  Lock,
+  ShieldAlert,
+  ArrowLeft,
+  KeyRound,
+  CheckCircle2,
+  Send,
+} from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { sendEmailOtp } from "@/lib/api/email.functions";
@@ -46,7 +61,9 @@ function Auth() {
   const navigate = useNavigate();
   const { currentProfile, addProfile, setRole, setCurrentProfile, profiles } = useStore();
 
-  const [mode, setMode] = useState<"login" | "signup" | "check-email" | "link-sent" | "otp" | "forgot" | "reset">("login");
+  const [mode, setMode] = useState<
+    "login" | "signup" | "check-email" | "link-sent" | "otp" | "forgot" | "reset"
+  >("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -58,7 +75,7 @@ function Auth() {
     role: "Procurement Officer" as Role,
     country: "India",
     notes: "",
-    avatar: ""
+    avatar: "",
   });
 
   const [otpValue, setOtpValue] = useState("");
@@ -82,7 +99,9 @@ function Auth() {
   // Set up Supabase password recovery link redirection listener
   useEffect(() => {
     if (supabase) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((event, session) => {
         if (event === "PASSWORD_RECOVERY") {
           setOtpEmail(session?.user?.email || "");
           setMode("reset");
@@ -109,8 +128,8 @@ function Auth() {
         data: {
           email: targetEmail,
           otp: code,
-          type: flow === "forgot" ? "reset" : "verification"
-        }
+          type: flow === "forgot" ? "reset" : "verification",
+        },
       });
 
       if (res.simulated) {
@@ -151,7 +170,7 @@ function Auth() {
         // Authenticate via Supabase Auth
         const { data, error } = await supabase.auth.signInWithPassword({
           email: email.trim(),
-          password
+          password,
         });
 
         if (error) {
@@ -172,7 +191,8 @@ function Auth() {
             phone: "+91 99999 88888",
             role: "Admin" as Role,
             country: "India",
-            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&h=256&fit=crop",
+            avatar:
+              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&h=256&fit=crop",
           };
 
           await supabase.from("profiles").upsert({
@@ -181,7 +201,7 @@ function Auth() {
             email: "kartikparmar.dev@gmail.com",
             role: "Admin",
             phone_number: "+91 99999 88888",
-            country: "India"
+            country: "India",
           });
 
           setCurrentProfile(adminProfile);
@@ -255,9 +275,9 @@ function Auth() {
             data: {
               first_name: signup.firstName,
               phone_number: signup.phone,
-              country: signup.country
-            }
-          }
+              country: signup.country,
+            },
+          },
         });
 
         if (error) {
@@ -272,7 +292,7 @@ function Auth() {
             email: signup.email.trim(),
             role: signup.role,
             phone_number: signup.phone,
-            country: signup.country
+            country: signup.country,
           });
         }
 
@@ -291,7 +311,7 @@ function Auth() {
             role: signup.role,
             country: signup.country,
             notes: signup.notes,
-            avatar: signup.avatar
+            avatar: signup.avatar,
           };
           setCurrentProfile(loadedProfile);
           setRole(signup.role);
@@ -323,8 +343,8 @@ function Auth() {
           type: "signup",
           email: otpEmail,
           options: {
-            emailRedirectTo: REDIRECT_URL
-          }
+            emailRedirectTo: REDIRECT_URL,
+          },
         });
         if (error) throw error;
         toast.success("Confirmation link resent successfully! Check your inbox.");
@@ -346,7 +366,7 @@ function Auth() {
       if (supabase) {
         // Trigger native Supabase recovery email redirecting back to our auth page
         const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-          redirectTo: REDIRECT_URL
+          redirectTo: REDIRECT_URL,
         });
 
         if (error) {
@@ -377,7 +397,7 @@ function Auth() {
     try {
       if (supabase) {
         const { error } = await supabase.auth.resetPasswordForEmail(otpEmail, {
-          redirectTo: REDIRECT_URL
+          redirectTo: REDIRECT_URL,
         });
         if (error) throw error;
         toast.success("Recovery link resent successfully! Check your inbox.");
@@ -410,7 +430,8 @@ function Auth() {
             phone: "+91 99999 88888",
             role: "Admin" as Role,
             country: "India",
-            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&h=256&fit=crop",
+            avatar:
+              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&h=256&fit=crop",
           };
           setCurrentProfile(adminProfile);
           setRole("Admin");
@@ -442,7 +463,7 @@ function Auth() {
           role: signup.role,
           country: signup.country,
           notes: signup.notes,
-          avatar: signup.avatar
+          avatar: signup.avatar,
         };
 
         await addProfile(newProfile);
@@ -451,7 +472,7 @@ function Auth() {
 
         const loadedProfile = {
           id: "p-mock-" + Math.random().toString(36).slice(2, 6),
-          ...newProfile
+          ...newProfile,
         };
         setCurrentProfile(loadedProfile);
         toast.success("Account created successfully!");
@@ -479,7 +500,7 @@ function Auth() {
       if (supabase) {
         // Recovery link redirect handles auth token internally. Simply update the user session:
         const { error: updateError } = await supabase.auth.updateUser({
-          password: newPassword
+          password: newPassword,
         });
 
         if (updateError) {
@@ -488,7 +509,9 @@ function Auth() {
 
         toast.success("Password reset successful. Logging you in!");
 
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         const { data: dbProfile } = await supabase
           .from("profiles")
           .select("*")
@@ -559,12 +582,20 @@ function Auth() {
       {/* Left Branding Panel */}
       <div className="hidden lg:flex bg-sidebar text-sidebar-foreground p-12 flex-col justify-between">
         <div className="flex items-center gap-2">
-          <div className="size-10 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-bold text-xl">V</div>
+          <div className="size-10 rounded-md bg-sidebar-primary text-sidebar-primary-foreground grid place-items-center font-bold text-xl">
+            V
+          </div>
           <div className="font-bold text-xl">VendorBridge</div>
         </div>
         <div>
-          <h1 className="text-4xl font-bold leading-tight">Smarter procurement.<br />Stronger vendors.</h1>
-          <p className="mt-4 opacity-80 max-w-md">End-to-end RFQ, vendor management, approvals, and invoicing in one elegant workspace.</p>
+          <h1 className="text-4xl font-bold leading-tight">
+            Smarter procurement.
+            <br />
+            Stronger vendors.
+          </h1>
+          <p className="mt-4 opacity-80 max-w-md">
+            End-to-end RFQ, vendor management, approvals, and invoicing in one elegant workspace.
+          </p>
         </div>
         <div className="text-xs opacity-60">© 2026 VendorBridge ERP</div>
       </div>
@@ -573,7 +604,13 @@ function Auth() {
       <div className="flex items-center justify-center p-6 bg-background">
         {mode === "login" || mode === "signup" ? (
           <Card className="p-8 w-full max-w-md shadow-xl border">
-            <Tabs defaultValue="login" onValueChange={() => { setOtpValue(""); setGeneratedOtp(""); }}>
+            <Tabs
+              defaultValue="login"
+              onValueChange={() => {
+                setOtpValue("");
+                setGeneratedOtp("");
+              }}
+            >
               <TabsList className="grid grid-cols-2 w-full">
                 <TabsTrigger value="login">Login</TabsTrigger>
                 <TabsTrigger value="signup">Sign up</TabsTrigger>
@@ -624,7 +661,10 @@ function Auth() {
               </TabsContent>
 
               {/* Signup View */}
-              <TabsContent value="signup" className="space-y-4 mt-5 max-h-[70vh] overflow-y-auto pr-1">
+              <TabsContent
+                value="signup"
+                className="space-y-4 mt-5 max-h-[70vh] overflow-y-auto pr-1"
+              >
                 <div className="flex flex-col items-center gap-1.5">
                   <Label className="text-xs text-muted-foreground">Profile Picture</Label>
                   <div className="relative group cursor-pointer size-20 rounded-full border-2 border-dashed bg-muted hover:border-primary flex items-center justify-center overflow-hidden transition-colors">
@@ -652,7 +692,9 @@ function Auth() {
                 </div>
 
                 <div className="space-y-1">
-                  <Label>First Name <span className="text-destructive">*</span></Label>
+                  <Label>
+                    First Name <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     placeholder="John"
                     value={signup.firstName}
@@ -660,7 +702,9 @@ function Auth() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label>Email Address <span className="text-destructive">*</span></Label>
+                  <Label>
+                    Email Address <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     type="email"
                     placeholder="john@example.com"
@@ -669,7 +713,9 @@ function Auth() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label>Password <span className="text-destructive">*</span></Label>
+                  <Label>
+                    Password <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     type="password"
                     placeholder="At least 6 characters"
@@ -678,7 +724,9 @@ function Auth() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label>Phone Number <span className="text-destructive">*</span></Label>
+                  <Label>
+                    Phone Number <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     placeholder="+91 XXXXX XXXXX"
                     value={signup.phone}
@@ -691,7 +739,9 @@ function Auth() {
                     value={signup.role}
                     onValueChange={(v) => setSignup({ ...signup, role: v as Role })}
                   >
-                    <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Procurement Officer">Procurement Officer</SelectItem>
                       <SelectItem value="Vendor">Vendor</SelectItem>
@@ -716,7 +766,11 @@ function Auth() {
                     onChange={(e) => setSignup({ ...signup, notes: e.target.value })}
                   />
                 </div>
-                <Button className="w-full h-10 mt-2" onClick={handleRegisterSubmit} disabled={isLoading}>
+                <Button
+                  className="w-full h-10 mt-2"
+                  onClick={handleRegisterSubmit}
+                  disabled={isLoading}
+                >
                   {isLoading ? "Registering..." : "Register & Confirm Email"}
                 </Button>
               </TabsContent>
@@ -729,13 +783,17 @@ function Auth() {
               <CheckCircle2 className="size-10" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">Verify Your Email</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                Verify Your Email
+              </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                A verification link has been dispatched to:<br />
+                A verification link has been dispatched to:
+                <br />
                 <strong className="text-foreground">{otpEmail}</strong>
               </p>
               <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                Please check your inbox (and spam folder) and click the link to confirm your account and sign in.
+                Please check your inbox (and spam folder) and click the link to confirm your account
+                and sign in.
               </p>
             </div>
 
@@ -764,9 +822,12 @@ function Auth() {
               <Send className="size-8" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">Recovery Link Sent</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                Recovery Link Sent
+              </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                A password reset recovery link has been dispatched to:<br />
+                A password reset recovery link has been dispatched to:
+                <br />
                 <strong className="text-foreground">{otpEmail}</strong>
               </p>
               <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
@@ -799,9 +860,12 @@ function Auth() {
               <div className="mx-auto size-12 rounded-full bg-primary/10 grid place-items-center text-primary">
                 <Mail className="size-6" />
               </div>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground">Security Verification</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                Security Verification
+              </h2>
               <p className="text-sm text-muted-foreground">
-                A 6-digit verification code has been dispatched to:<br />
+                A 6-digit verification code has been dispatched to:
+                <br />
                 <strong className="text-foreground">{otpEmail}</strong>
               </p>
             </div>
@@ -826,7 +890,8 @@ function Auth() {
                   <span>Local Testing Mode</span>
                 </div>
                 <p className="opacity-90">
-                  Because no active Supabase Auth keys are reachable or configured on the server, the OTP verification is simulated.
+                  Because no active Supabase Auth keys are reachable or configured on the server,
+                  the OTP verification is simulated.
                 </p>
                 <p>
                   Your OTP Verification Code:{" "}
@@ -867,7 +932,8 @@ function Auth() {
               </div>
               <h2 className="text-2xl font-bold tracking-tight text-foreground">Forgot Password</h2>
               <p className="text-sm text-muted-foreground">
-                Enter your registered email address. We will verify it and send you a password recovery link.
+                Enter your registered email address. We will verify it and send you a password
+                recovery link.
               </p>
             </div>
 
@@ -962,7 +1028,11 @@ function Auth() {
                 </div>
               )}
 
-              <Button className="w-full h-10 mt-2" onClick={handleResetPassword} disabled={isLoading}>
+              <Button
+                className="w-full h-10 mt-2"
+                onClick={handleResetPassword}
+                disabled={isLoading}
+              >
                 Reset Password & Sign In
               </Button>
 

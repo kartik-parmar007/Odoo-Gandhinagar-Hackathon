@@ -21,7 +21,7 @@
 
 ## 📖 Overview
 
-**VendorBridge** (also known as **ProcurementPal**) is a state-of-the-art, secure, and real-time Procurement ERP system designed to optimize the Request for Quotations (RFQ) lifecycle. From drafting RFQs and collecting vendor bids to comparison matrices, multi-stage approvals, and Purchase Order (PO) settlement, VendorBridge digitalizes and automates the procurement workflow for enterprise operations. 
+**VendorBridge** (also known as **ProcurementPal**) is a state-of-the-art, secure, and real-time Procurement ERP system designed to optimize the Request for Quotations (RFQ) lifecycle. From drafting RFQs and collecting vendor bids to comparison matrices, multi-stage approvals, and Purchase Order (PO) settlement, VendorBridge digitalizes and automates the procurement workflow for enterprise operations.
 
 It is tailored for modern organizations, supporting fine-grained role-based dashboards, regional vendor sourcing, local Gujarat-based seed tracking, and live audit trails.
 
@@ -33,7 +33,7 @@ Watch the complete demonstration of the VendorBridge platform, covering roles, R
 
 [![VendorBridge Video Walkthrough](https://img.youtube.com/vi/wQSeuEWr0sY/0.jpg)](https://youtu.be/wQSeuEWr0sY?si=Rb7HvkJgTea1sGpf)
 
-*Click the image above to view the video walkthrough on YouTube.*
+_Click the image above to view the video walkthrough on YouTube._
 
 ---
 
@@ -54,8 +54,8 @@ Watch the complete demonstration of the VendorBridge platform, covering roles, R
 
 ## 📸 Interface Showcase
 
-| 🌟 Dashboard Overview | 📊 Analytics & Reports | ⚖️ Quotation Comparison |
-| :---: | :---: | :---: |
+|                   🌟 Dashboard Overview                    |                   📊 Analytics & Reports                    |                        ⚖️ Quotation Comparison                        |
+| :--------------------------------------------------------: | :---------------------------------------------------------: | :-------------------------------------------------------------------: |
 | <img src="public/first.jpeg" alt="Dashboard" width="280"/> | <img src="public/second.jpeg" alt="Analytics" width="280"/> | <img src="public/third.jpeg" alt="Quotation Comparison" width="280"/> |
 
 ---
@@ -99,9 +99,11 @@ Meet the creators behind **VendorBridge**, built during the Odoo Gandhinagar Hac
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 Make sure you have [Bun](https://bun.sh/) (recommended) or [Node.js](https://nodejs.org/) installed.
 
 ### 1. Clone & Install Dependencies
+
 ```bash
 git clone https://github.com/kartik-parmar007/Odoo-Gandhinagar-Hackathon.git
 cd Odoo-Gandhinagar-Hackathon
@@ -109,19 +111,24 @@ bun install  # or npm install
 ```
 
 ### 2. Environment Variables Setup
+
 Create a `.env` file in the root directory and add your Supabase credentials:
+
 ```env
 VITE_SUPABASE_URL=YOUR_SUPABASE_URL
 VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_SUPABASE_ANON_KEY
 ```
 
 ### 3. Database Setup
+
 1. Open your Supabase Dashboard and go to the **SQL Editor**.
 2. Copy the contents of [`seed-gujarat-data.sql`](file:///f:/Odoo%20latest%20Hackathon/procurement-pal-connect-main/procurement-pal-connect-main/seed-gujarat-data.sql) and run the script to initialize tables, RLS policies, and core mock profiles/vendors.
 3. If you run into row-level authorization issues, run the commands in [`supabase-fix-rls.sql`](file:///f:/Odoo%20latest%20Hackathon/procurement-pal-connect-main/procurement-pal-connect-main/supabase-fix-rls.sql) to permit anonymous actions for hackathon evaluation mode.
 
 ### 4. Run Locally
+
 ```bash
 bun dev  # or npm run dev
 ```
+
 Open `http://localhost:3000` (or the port specified by Vite) in your browser.

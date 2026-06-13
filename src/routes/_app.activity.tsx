@@ -6,7 +6,13 @@ import { FileText, ShieldCheck, Users, ShoppingCart, FileCheck2 } from "lucide-r
 
 export const Route = createFileRoute("/_app/activity")({ component: Activity });
 
-const ICONS = { rfq: FileText, approval: ShieldCheck, vendor: Users, po: ShoppingCart, quotation: FileCheck2 };
+const ICONS = {
+  rfq: FileText,
+  approval: ShieldCheck,
+  vendor: Users,
+  po: ShoppingCart,
+  quotation: FileCheck2,
+};
 
 function Activity() {
   const { logs } = useStore();
@@ -22,9 +28,13 @@ function Activity() {
               const Icon = ICONS[l.type];
               return (
                 <li key={l.id} className="pl-6 relative">
-                  <span className="absolute -left-[13px] top-0 size-6 rounded-full bg-primary text-primary-foreground grid place-items-center"><Icon className="size-3" /></span>
+                  <span className="absolute -left-[13px] top-0 size-6 rounded-full bg-primary text-primary-foreground grid place-items-center">
+                    <Icon className="size-3" />
+                  </span>
                   <div className="text-sm">{l.message}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{new Date(l.timestamp).toLocaleString()}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    {new Date(l.timestamp).toLocaleString()}
+                  </div>
                 </li>
               );
             })}

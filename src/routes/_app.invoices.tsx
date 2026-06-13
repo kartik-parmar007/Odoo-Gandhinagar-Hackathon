@@ -44,11 +44,15 @@ function Invoices() {
                 {documents.map((d) => {
                   // Look up vendor: first from vendorId on doc, then via quotation
                   const q = quotations.find((x) => x.id === d.quotationId);
-                  const v = vendors.find((x) => x.id === d.vendorId) || vendors.find((x) => x.id === q?.vendorId);
+                  const v =
+                    vendors.find((x) => x.id === d.vendorId) ||
+                    vendors.find((x) => x.id === q?.vendorId);
                   const subtotal = q?.lines.reduce((s, l) => s + l.qty * l.unitPrice, 0) ?? 0;
                   return (
                     <tr key={d.id} className="hover:bg-muted/20 transition-colors">
-                      <td className="px-5 py-3 font-mono text-xs font-semibold text-primary">{d.poNumber}</td>
+                      <td className="px-5 py-3 font-mono text-xs font-semibold text-primary">
+                        {d.poNumber}
+                      </td>
                       <td className="px-4 py-3 font-medium">{v?.name || "—"}</td>
                       <td className="px-4 py-3 text-muted-foreground">{v?.category || "—"}</td>
                       <td className="px-4 py-3 text-right font-semibold">

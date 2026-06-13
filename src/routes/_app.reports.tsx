@@ -1,7 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppHeader } from "@/components/AppHeader";
 import { Card } from "@/components/ui/card";
-import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid, PieChart, Pie, Cell, Legend } from "recharts";
+import {
+  BarChart,
+  Bar,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
+} from "recharts";
 import { useStore } from "@/lib/mock";
 
 export const Route = createFileRoute("/_app/reports")({ component: Reports });
@@ -9,8 +21,12 @@ export const Route = createFileRoute("/_app/reports")({ component: Reports });
 const COLORS = ["#7C3AED", "#0EA5E9", "#F59E0B", "#10B981"];
 
 const trend = [
-  { m: "Dec", v: 180 }, { m: "Jan", v: 210 }, { m: "Feb", v: 165 },
-  { m: "Mar", v: 240 }, { m: "Apr", v: 285 }, { m: "May", v: 320 },
+  { m: "Dec", v: 180 },
+  { m: "Jan", v: 210 },
+  { m: "Feb", v: 165 },
+  { m: "Mar", v: 240 },
+  { m: "Apr", v: 285 },
+  { m: "May", v: 320 },
 ];
 
 function Reports() {
@@ -50,15 +66,19 @@ function Reports() {
   }));
 
   // Fallback if no documents loaded yet to keep UI visually appealing
-  const finalSpendByCategory = spendByCategory.length > 0 ? spendByCategory : [
-    { name: "Furniture", value: 217120 },
-    { name: "IT Hardware", value: 320960 },
-  ];
+  const finalSpendByCategory =
+    spendByCategory.length > 0
+      ? spendByCategory
+      : [
+          { name: "Furniture", value: 217120 },
+          { name: "IT Hardware", value: 320960 },
+        ];
 
   const topVendors = Object.values(vendorTotals).sort((a, b) => b.spend - a.spend);
-  const finalTopVendors = topVendors.length > 0 ? topVendors : [
-    { name: "Infra Supplies Pvt Ltd", spend: 217120, pos: 1 },
-  ];
+  const finalTopVendors =
+    topVendors.length > 0
+      ? topVendors
+      : [{ name: "Infra Supplies Pvt Ltd", spend: 217120, pos: 1 }];
 
   return (
     <>
@@ -66,7 +86,9 @@ function Reports() {
       <main className="p-6 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Procurement Insights</h2>
-          <p className="text-sm text-muted-foreground">Analytical reports across spend and vendors</p>
+          <p className="text-sm text-muted-foreground">
+            Analytical reports across spend and vendors
+          </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <Card className="p-5">
@@ -89,8 +111,16 @@ function Reports() {
             <div className="h-64">
               <ResponsiveContainer>
                 <PieChart>
-                  <Pie data={finalSpendByCategory} dataKey="value" nameKey="name" outerRadius={80} label>
-                    {finalSpendByCategory.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  <Pie
+                    data={finalSpendByCategory}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={80}
+                    label
+                  >
+                    {finalSpendByCategory.map((_, i) => (
+                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    ))}
                   </Pie>
                   <Legend />
                   <Tooltip formatter={(value) => `₹${Number(value).toLocaleString()}`} />
@@ -118,25 +148,25 @@ function Reports() {
           <h3 className="font-semibold mb-3">Top Vendors by Spend</h3>
           <div className="overflow-x-auto -mx-5 px-5">
             <table className="w-full text-sm min-w-[500px]">
-            <thead className="text-xs text-muted-foreground border-b">
-              <tr>
-                <th className="text-left py-2">Vendor Name</th>
-                <th className="text-left">Total Spend</th>
-                <th className="text-left">Purchase Orders</th>
-              </tr>
-            </thead>
-            <tbody>
-              {finalTopVendors.map((v, i) => (
-                <tr key={i} className="border-b last:border-b-0 hover:bg-muted/30">
-                  <td className="py-3 font-medium">{v.name}</td>
-                  <td>₹{v.spend.toLocaleString()}</td>
-                  <td>{v.pos} POs</td>
+              <thead className="text-xs text-muted-foreground border-b">
+                <tr>
+                  <th className="text-left py-2">Vendor Name</th>
+                  <th className="text-left">Total Spend</th>
+                  <th className="text-left">Purchase Orders</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+              </thead>
+              <tbody>
+                {finalTopVendors.map((v, i) => (
+                  <tr key={i} className="border-b last:border-b-0 hover:bg-muted/30">
+                    <td className="py-3 font-medium">{v.name}</td>
+                    <td>₹{v.spend.toLocaleString()}</td>
+                    <td>{v.pos} POs</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
       </main>
     </>
   );

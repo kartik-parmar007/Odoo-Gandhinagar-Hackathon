@@ -1,7 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Users, FileText, FileCheck2, ShieldCheck,
-  ShoppingCart, Receipt, BarChart3, Activity, GitCompareArrows
+  LayoutDashboard,
+  Users,
+  FileText,
+  FileCheck2,
+  ShieldCheck,
+  ShoppingCart,
+  Receipt,
+  BarChart3,
+  Activity,
+  GitCompareArrows,
 } from "lucide-react";
 import type { Role } from "@/lib/mock";
 import { useStore } from "@/lib/mock";
@@ -13,14 +21,39 @@ const ALL: Role[] = ["Procurement Officer", "Vendor", "Manager", "Admin"];
 
 const ITEMS: Item[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, roles: ALL },
-  { to: "/vendors", label: "Vendors", icon: Users, roles: ["Procurement Officer", "Admin", "Manager"] },
+  {
+    to: "/vendors",
+    label: "Vendors",
+    icon: Users,
+    roles: ["Procurement Officer", "Admin", "Manager"],
+  },
   { to: "/rfqs", label: "RFQs", icon: FileText, roles: ALL },
   { to: "/quotations", label: "Quotations", icon: FileCheck2, roles: ALL },
-  { to: "/quotation-comparison", label: "Compare Quotes", icon: GitCompareArrows, roles: ["Procurement Officer", "Manager", "Admin"] },
+  {
+    to: "/quotation-comparison",
+    label: "Compare Quotes",
+    icon: GitCompareArrows,
+    roles: ["Procurement Officer", "Manager", "Admin"],
+  },
   { to: "/approvals", label: "Approvals", icon: ShieldCheck, roles: ["Manager", "Admin"] },
-  { to: "/purchase-orders", label: "Purchase Orders", icon: ShoppingCart, roles: ["Procurement Officer", "Vendor", "Admin"] },
-  { to: "/invoices", label: "Invoices", icon: Receipt, roles: ["Procurement Officer", "Vendor", "Admin"] },
-  { to: "/reports", label: "Reports", icon: BarChart3, roles: ["Procurement Officer", "Manager", "Admin"] },
+  {
+    to: "/purchase-orders",
+    label: "Purchase Orders",
+    icon: ShoppingCart,
+    roles: ["Procurement Officer", "Vendor", "Admin"],
+  },
+  {
+    to: "/invoices",
+    label: "Invoices",
+    icon: Receipt,
+    roles: ["Procurement Officer", "Vendor", "Admin"],
+  },
+  {
+    to: "/reports",
+    label: "Reports",
+    icon: BarChart3,
+    roles: ["Procurement Officer", "Manager", "Admin"],
+  },
   { to: "/activity", label: "Activity & Logs", icon: Activity, roles: ALL },
 ];
 
@@ -40,7 +73,9 @@ export function AppSidebar() {
         />
         <div>
           <div className="font-bold text-base leading-none tracking-tight">VendorBridge</div>
-          <div className="text-[10px] uppercase tracking-widest opacity-50 mt-1 font-medium">Procurement ERP</div>
+          <div className="text-[10px] uppercase tracking-widest opacity-50 mt-1 font-medium">
+            Procurement ERP
+          </div>
         </div>
       </div>
 
@@ -59,7 +94,7 @@ export function AppSidebar() {
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150",
                 active
                   ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
               )}
             >
               <i.icon className="size-4 shrink-0" />

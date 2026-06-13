@@ -4,7 +4,13 @@ import { useStore } from "@/lib/mock";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useState } from "react";
 import { Trophy, Clock, DollarSign, Star, TrendingDown, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -42,7 +48,10 @@ function QuotationComparison() {
     }
     const existing = approvals.find((a) => a.quotationId === quotationId);
     if (existing) {
-      updateApproval(existing.id, { state: "Approved", remarks: "Selected via Quotation Comparison" });
+      updateApproval(existing.id, {
+        state: "Approved",
+        remarks: "Selected via Quotation Comparison",
+      });
     }
     log({
       type: "approval",
@@ -83,19 +92,27 @@ function QuotationComparison() {
           <Card className="p-4 bg-primary/5 border-primary/20">
             <div className="flex flex-wrap gap-4 text-sm">
               <div>
-                <span className="text-muted-foreground text-xs uppercase tracking-wide block">RFQ</span>
+                <span className="text-muted-foreground text-xs uppercase tracking-wide block">
+                  RFQ
+                </span>
                 <span className="font-semibold">{selectedRfq.title}</span>
               </div>
               <div>
-                <span className="text-muted-foreground text-xs uppercase tracking-wide block">Category</span>
+                <span className="text-muted-foreground text-xs uppercase tracking-wide block">
+                  Category
+                </span>
                 <span className="font-semibold">{selectedRfq.category}</span>
               </div>
               <div>
-                <span className="text-muted-foreground text-xs uppercase tracking-wide block">Deadline</span>
+                <span className="text-muted-foreground text-xs uppercase tracking-wide block">
+                  Deadline
+                </span>
                 <span className="font-semibold">{selectedRfq.deadline}</span>
               </div>
               <div>
-                <span className="text-muted-foreground text-xs uppercase tracking-wide block">Quotations Received</span>
+                <span className="text-muted-foreground text-xs uppercase tracking-wide block">
+                  Quotations Received
+                </span>
                 <span className="font-semibold">{rfqQuotations.length}</span>
               </div>
             </div>
@@ -116,7 +133,9 @@ function QuotationComparison() {
                 <TrendingDown className="size-8 text-success shrink-0" />
                 <div>
                   <div className="text-xs text-muted-foreground">Lowest Bid (incl. 18% GST)</div>
-                  <div className="font-bold text-success text-lg">₹{lowestTotal.toLocaleString("en-IN", { maximumFractionDigits: 0 })}</div>
+                  <div className="font-bold text-success text-lg">
+                    ₹{lowestTotal.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+                  </div>
                 </div>
               </Card>
               <Card className="p-4 flex items-center gap-3 border-info/30 bg-info/5">
@@ -131,14 +150,27 @@ function QuotationComparison() {
                 <div>
                   <div className="text-xs text-muted-foreground">Top Rated Vendor</div>
                   <div className="font-bold text-warning-foreground text-lg">
-                    {quoteData.sort((a, b) => (b.vendor?.rating ?? 0) - (a.vendor?.rating ?? 0))[0]?.vendor?.name?.split(" ").slice(0, 2).join(" ") ?? "—"}
+                    {quoteData
+                      .sort((a, b) => (b.vendor?.rating ?? 0) - (a.vendor?.rating ?? 0))[0]
+                      ?.vendor?.name?.split(" ")
+                      .slice(0, 2)
+                      .join(" ") ?? "—"}
                   </div>
                 </div>
               </Card>
             </div>
 
             {/* Comparison cards */}
-            <div className={cn("grid gap-4", quoteData.length === 1 ? "grid-cols-1 max-w-sm" : quoteData.length === 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3")}>
+            <div
+              className={cn(
+                "grid gap-4",
+                quoteData.length === 1
+                  ? "grid-cols-1 max-w-sm"
+                  : quoteData.length === 2
+                    ? "grid-cols-1 md:grid-cols-2"
+                    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+              )}
+            >
               {quoteData.map(({ quotation, vendor, subtotal, gst, total }) => {
                 const isLowest = total === lowestTotal;
                 const isFastest = quotation.deliveryDays === fastestDelivery;
@@ -150,7 +182,7 @@ function QuotationComparison() {
                     className={cn(
                       "p-5 space-y-4 relative transition-shadow",
                       isLowest && "border-success/50 shadow-success/10 shadow-md",
-                      isSelected && "ring-2 ring-primary"
+                      isSelected && "ring-2 ring-primary",
                     )}
                   >
                     {isLowest && (
@@ -172,7 +204,9 @@ function QuotationComparison() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="font-semibold">{vendor?.name ?? "Unknown Vendor"}</div>
-                        <div className="text-xs text-muted-foreground mt-0.5">{vendor?.category}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">
+                          {vendor?.category}
+                        </div>
                       </div>
                       <div className="flex items-center gap-1 text-warning-foreground text-xs font-semibold bg-warning/10 px-2 py-1 rounded-md">
                         <Star className="size-3 fill-current" />
@@ -196,8 +230,12 @@ function QuotationComparison() {
                             <tr key={i} className="hover:bg-muted/10">
                               <td className="p-2 font-medium">{l.item}</td>
                               <td className="p-2 text-right">{l.qty}</td>
-                              <td className="p-2 text-right">₹{l.unitPrice.toLocaleString("en-IN")}</td>
-                              <td className="p-2 text-right font-semibold">₹{(l.qty * l.unitPrice).toLocaleString("en-IN")}</td>
+                              <td className="p-2 text-right">
+                                ₹{l.unitPrice.toLocaleString("en-IN")}
+                              </td>
+                              <td className="p-2 text-right font-semibold">
+                                ₹{(l.qty * l.unitPrice).toLocaleString("en-IN")}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -225,10 +263,18 @@ function QuotationComparison() {
                       <div className="flex items-center gap-1.5">
                         <Clock className="size-3.5 text-muted-foreground" />
                         <span className="text-xs text-muted-foreground">
-                          Delivery in <strong className={cn(isFastest && "text-info")}>{quotation.deliveryDays} days</strong>
+                          Delivery in{" "}
+                          <strong className={cn(isFastest && "text-info")}>
+                            {quotation.deliveryDays} days
+                          </strong>
                         </span>
                         {isFastest && (
-                          <Badge variant="outline" className="text-[9px] border-info/30 text-info bg-info/5 px-1 py-0">Fastest</Badge>
+                          <Badge
+                            variant="outline"
+                            className="text-[9px] border-info/30 text-info bg-info/5 px-1 py-0"
+                          >
+                            Fastest
+                          </Badge>
                         )}
                       </div>
                       <Badge
@@ -238,8 +284,8 @@ function QuotationComparison() {
                           quotation.status === "Selected"
                             ? "border-primary/30 text-primary bg-primary/5"
                             : quotation.status === "Rejected"
-                            ? "border-destructive/30 text-destructive"
-                            : "border-muted text-muted-foreground"
+                              ? "border-destructive/30 text-destructive"
+                              : "border-muted text-muted-foreground",
                         )}
                       >
                         {quotation.status}

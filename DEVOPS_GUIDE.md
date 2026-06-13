@@ -1,7 +1,8 @@
 # 🤝 Professional DevOps Master Guide & Roadmap
+
 ## VendorBridge (ProcurementPal) Deployment & DevOps Lifecycle
 
-Welcome! This guide is designed to take you from a complete beginner to a confident **DevOps Engineer** by deploying this project (**VendorBridge**) using a production-grade enterprise DevOps toolchain. 
+Welcome! This guide is designed to take you from a complete beginner to a confident **DevOps Engineer** by deploying this project (**VendorBridge**) using a production-grade enterprise DevOps toolchain.
 
 We will use **Docker**, **Kubernetes**, **Terraform (IaC)**, **GitHub Actions**, **Nginx**, and **Prometheus/Grafana** running on an **AWS Free Tier** account.
 
@@ -33,17 +34,23 @@ graph TD
 We use **Docker** to box the application so it runs the exact same way on your laptop and in production.
 
 #### 1. Test your Dockerfile locally
+
 Build the container image using the `Dockerfile` we created:
+
 ```bash
 docker build -t procurement-pal:local .
 ```
 
 #### 2. Run the application using Docker Compose
+
 Open your local terminal and run:
+
 ```bash
 docker compose up --build
 ```
+
 This single command spins up:
+
 - The React/TanStack Start web app at `http://localhost:3000`
 - Nginx reverse proxy at `http://localhost:80`
 - Prometheus UI at `http://localhost:9090`
@@ -52,10 +59,11 @@ This single command spins up:
 ---
 
 ### 🌐 Phase 2: Infrastructure as Code (Terraform & AWS)
-   
+
 Instead of clicking around the AWS console web interface to set up virtual machines, network subnets, and firewalls, we write **Terraform** files (`/terraform`) to automate the process.
 
 #### 1. Setup your AWS Credentials locally
+
 1. Go to the AWS Console -> **IAM** (Identity and Access Management).
 2. Create a user (e.g., `devops-admin`) with `AdministratorAccess`.
 3. Go to Security Credentials, create an **Access Key ID** and **Secret Access Key**.
@@ -66,19 +74,26 @@ Instead of clicking around the AWS console web interface to set up virtual machi
    Provide your Access Key, Secret Key, default region (e.g., `us-east-1`), and output format (`json`).
 
 #### 2. Initialize and Apply Terraform
+
 Open your terminal, navigate to the `/terraform` folder, and run:
+
 ```bash
 cd terraform
 terraform init
 ```
+
 This downloads the AWS providers. Now, run:
+
 ```bash
 terraform plan
 ```
+
 This shows you exactly what resources AWS will create. To provision them, run:
+
 ```bash
 terraform apply
 ```
+
 Type `yes` when prompted. Terraform will output your EC2 server's **Public IP Address** and your **AWS ECR Repository URL**.
 
 ---
@@ -88,7 +103,9 @@ Type `yes` when prompted. Terraform will output your EC2 server's **Public IP Ad
 We set up a CI/CD pipeline using **GitHub Actions** to automatically build, scan, test, and deploy our code on every git push.
 
 #### 1. Create GitHub Secrets
+
 Navigate to your GitHub repository -> **Settings** -> **Secrets and variables** -> **Actions** -> **New repository secret** and add:
+
 - `AWS_ACCESS_KEY_ID`: Your IAM user access key.
 - `AWS_SECRET_ACCESS_KEY`: Your IAM user secret key.
 - `AWS_REGISTRY_URL`: Your AWS ECR Registry URL (obtained from Terraform outputs, e.g., `<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com`).
@@ -98,7 +115,9 @@ Navigate to your GitHub repository -> **Settings** -> **Secrets and variables** 
 - `EC2_SSH_PRIVATE_KEY`: The contents of the SSH private key (`.pem` file) you created in AWS EC2 Console to access the server.
 
 #### 2. How the Pipeline Works
+
 Every time you push to the `main` branch:
+
 1. **Lint & Check:** ESLint runs static code analysis to catch syntax bugs.
 2. **Security Scan (Trivy):** Scans the built Docker image for software package vulnerabilities.
 3. **AWS Push:** Logs into ECR and uploads the new Docker image.
@@ -122,7 +141,8 @@ In production, users shouldn't have to write port `:3000` or `:3001` in the brow
 
 ### 📊 Phase 5: Monitoring & Metrics (Prometheus & Grafana)
 
-A DevOps engineer needs to know *when* a server goes down or runs out of RAM.
+A DevOps engineer needs to know _when_ a server goes down or runs out of RAM.
+
 - **Prometheus** continuously pulls data from your application metrics route.
 - **Grafana** displays this data in real-time charts.
 - **Setup Tip:** In the Grafana UI (`http://localhost:3001`), add Prometheus as a Data Source (URL: `http://prometheus:9090`). Create a new dashboard to visualize memory and CPU workloads.
@@ -134,6 +154,7 @@ A DevOps engineer needs to know *when* a server goes down or runs out of RAM.
 If your app goes viral, one EC2 instance will fail. **Kubernetes (K8s)** manages clusters of servers and containers.
 
 #### How to practice Kubernetes locally:
+
 1. Install **Minikube** (a local single-node K8s cluster) or **k3d**.
 2. Start Minikube:
    ```bash
