@@ -1,0 +1,22 @@
+global:
+  scrape_interval:     15s # How frequently to scrape targets
+  evaluation_interval: 15s # How frequently to evaluate rules
+
+# Scrape configurations
+scrape_configs:
+  # 1. Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 2. Node/App application monitoring
+  # When Node.js app runs, it can expose metrics on a path (e.g. /metrics) using libraries like prom-client
+  - job_name: 'tanstack-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['app:3000']
+
+  # 3. Nginx web traffic monitoring (requires nginx-prometheus-exporter)
+  # - job_name: 'nginx'
+  #   static_configs:
+  #     - targets: ['nginx-exporter:9113']

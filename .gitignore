@@ -38,3 +38,9 @@ dist-ssr
 # Vercel output
 .vercel
 
+# Terraform
+**/terraform.tfstate*
+**/.terraform/
+**/*.pem
+
+

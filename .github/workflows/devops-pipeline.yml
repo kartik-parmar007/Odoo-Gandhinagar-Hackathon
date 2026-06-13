@@ -1,0 +1,161 @@
+name: Professional DevOps CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # ==========================================
+  # STAGE 1: Code Quality, Lint & Build Tests (CI)
+  # ==========================================
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run ESLint Checks
+        run: npm run lint
+
+      # Test the compile stage before packaging
+      - name: Compile and Build App Verification
+        run: npm run build
+        env:
+          # Fake keys for compile-time verification if required
+          VITE_SUPABASE_URL: "https://example.supabase.co"
+          VITE_SUPABASE_PUBLISHABLE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+
+  # ==========================================
+  # STAGE 2: Security Scan & Docker Build
+  # ==========================================
+  security-and-package:
+    needs: code-quality
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Set up QEMU for multi-platform builds if needed
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build image locally first to run vulnerability scanning
+      - name: Build Local Image for Scanning
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true # Loads image into local Docker daemon
+          tags: procurement-pal:scan-temp
+          build-args: |
+            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+            VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      # Aquasecurity Trivy scans the container image for OS & package vulnerabilities
+      - name: Run Trivy Security Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'procurement-pal:scan-temp'
+          format: 'table'
+          exit-code: '0' # Set to '1' in production to break the build if critical bugs are found
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+  # ==========================================
+  # STAGE 3: AWS Publish & IaC Check
+  # ==========================================
+  publish-and-provision:
+    needs: security-and-package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Authenticate with AWS safely
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Login to AWS Elastic Container Registry
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Build & Push the production Docker image to ECR
+      - name: Build, Tag, and Push Image to ECR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/procurement-pal:latest
+            ${{ steps.login-ecr.outputs.registry }}/procurement-pal:${{ github.sha }}
+          build-args: |
+            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+            VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      # Verify Terraform scripts (Static Code validation)
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Format & Init
+        run: |
+          cd terraform
+          terraform fmt -check
+          terraform init -backend=false # Runs validation without setting up backend state bucket
+          terraform validate
+
+  # ==========================================
+  # STAGE 4: Automated Deploy to AWS EC2 (CD)
+  # ==========================================
+  deploy-to-ec2:
+    needs: publish-and-provision
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST_IP }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # 1. Login to AWS ECR on the EC2 Server
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_REGISTRY_URL }}
+
+            # 2. Pull the latest Docker Image
+            docker pull ${{ secrets.AWS_REGISTRY_URL }}/procurement-pal:latest
+
+            # 3. Stop and remove old running container if exists
+            docker stop procurement-pal-app || true
+            docker rm procurement-pal-app || true
+
+            # 4. Start the new container with correct keys
+            docker run -d \
+              --name procurement-pal-app \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              -e NODE_ENV=production \
+              -e VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
+              -e VITE_SUPABASE_PUBLISHABLE_KEY="${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}" \
+              ${{ secrets.AWS_REGISTRY_URL }}/procurement-pal:latest
+
+            # 5. Clean up unused old docker images to save EC2 disk space
+            docker image prune -a -f
